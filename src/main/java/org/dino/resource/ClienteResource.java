@@ -61,8 +61,17 @@ public class ClienteResource {
         }
         
         entity.setNome(person.getNome());
-        entity.setCodigoUnidade(person.getCodigoUnidade());
-        entity.setQtdContratada(person.getQtdContratada());
+        entity.setClassificacao(person.getClassificacao());
+        entity.setCidade(person.getCidade());
+        entity.setCodigoCliente(person.getCodigoCliente());
+        entity.setContato(person.getContato());
+        entity.setCpfCnpj(person.getCpfCnpj());
+        entity.setEmail(person.getEmail());
+        entity.setEndereco(person.getEndereco());
+        entity.setNumeroUC(person.getNumeroUC());
+        entity.setUf(person.getUf());
+        
+        entity.persist();
         
         return entity;
     }

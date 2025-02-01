@@ -20,11 +20,12 @@ public class Cliente  extends PanacheEntityBase{
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "codigoUnidade", length = 45)
-    private String codigoUnidade;
+    @Column(name = "codigoCliente", length = 45)
+    private String codigoCliente;
 
-    @Column(name = "qtdContratado")
-    private Integer qtdContratada;
+    @Column(name = "numeroUC", length = 45)
+    private String numeroUC;
+
     
     @Column(name = "cpfCnpj", length = 18)
     private String cpfCnpj;
@@ -37,6 +38,15 @@ public class Cliente  extends PanacheEntityBase{
     
     @Column(name = "endereco", length = 150)
     private String endereco;
+    
+    @Column(name = "cidade", length = 150)
+    private String cidade;
+    
+    @Column(name = "uf", length = 2)
+    private String uf;
+    
+    @Column(name = "classificacao", length = 2)
+    private String classificacao;
 
     public Integer getId() {
         return id;
@@ -54,23 +64,7 @@ public class Cliente  extends PanacheEntityBase{
         this.nome = nome;
     }
 
-    public String getCodigoUnidade() {
-        return codigoUnidade;
-    }
-
-    public void setCodigoUnidade(String codigoUnidade) {
-        this.codigoUnidade = codigoUnidade;
-    }
-
-    public Integer getQtdContratada() {
-        return qtdContratada;
-    }
-
-    public void setQtdContratada(Integer qtdContratada) {
-        this.qtdContratada = qtdContratada;
-    }
-
-	public String getCpfCnpj() {
+   	public String getCpfCnpj() {
 		return cpfCnpj;
 	}
 
@@ -101,7 +95,48 @@ public class Cliente  extends PanacheEntityBase{
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
+
+	public String getCodigoCliente() {
+		return codigoCliente;
+	}
+
+	public void setCodigoCliente(String codigoCliente) {
+		this.codigoCliente = codigoCliente;
+	}
+
+	public String getNumeroUC() {
+		return numeroUC;
+	}
+
+	public void setNumeroUC(String numeroUC) {
+		this.numeroUC = numeroUC;
+	}
+
+	public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	public String getUf() {
+		return uf;
+	}
+
+	public void setUf(String uf) {
+		this.uf = uf;
+	}
+
+	public String getClassificacao() {
+		return classificacao;
+	}
+
+	public void setClassificacao(String classificacao) {
+		this.classificacao = classificacao;
+	}
     
+	
 	
     
 
