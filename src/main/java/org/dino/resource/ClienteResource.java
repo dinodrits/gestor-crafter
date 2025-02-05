@@ -46,9 +46,10 @@ public class ClienteResource {
 
     @POST
     @Transactional
-    public Response create(Cliente cliente) {
+    public Cliente create(Cliente cliente) {
+    	System.out.println(cliente);
     	cliente.persist();
-        return Response.created(URI.create("/clientes/" + cliente.getId())).build();
+        return cliente;
     }
 
     @PUT
@@ -72,6 +73,7 @@ public class ClienteResource {
         entity.setUf(person.getUf());
         
         entity.persist();
+        System.out.println(entity.getId());
         
         return entity;
     }
