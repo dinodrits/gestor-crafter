@@ -11,7 +11,7 @@ public class geracoes extends PanacheEntityBase{
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUsina", nullable = false)
-    private Usinas idUsina;
+    private Usina idUsina;
 
     @Column(name = "mes")
     private Integer mes;
@@ -30,11 +30,11 @@ public class geracoes extends PanacheEntityBase{
         this.id = id;
     }
 
-    public Usinas getIdUsina() {
+    public Usina getIdUsina() {
         return idUsina;
     }
 
-    public void setIdUsina(Usinas idUsina) {
+    public void setIdUsina(Usina idUsina) {
         this.idUsina = idUsina;
     }
 
