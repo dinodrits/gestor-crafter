@@ -1,9 +1,11 @@
 package org.dino.resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dino.model.Usina;
 
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -14,12 +16,16 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import repository.UsinaRepository;
 
 @Path("/usina")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UsinaResource {
 
+	@Inject
+	UsinaRepository usinasRepository;
+	
 	@GET
     public List<Usina> list() {
         return Usina.listAll();
@@ -32,6 +38,16 @@ public class UsinaResource {
 //		         Parameters.with("id", id)).list();
 //        
 //    }
+	
+	@GET
+	@Path("/disponibilidade")
+	public List<Usina> getUsinasUtilizacao(){
+		
+		
+		return usinasRepository.getUsinasConsumo();
+		
+	}
+	
 	
     @GET
     @Path("/{id}")

@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "Usuarios")
 public class Usuario  extends PanacheEntityBase{
     
 	@Id

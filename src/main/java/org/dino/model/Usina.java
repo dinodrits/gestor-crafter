@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -47,9 +48,26 @@ public class Usina extends PanacheEntityBase{
     @Column(name = "dataCriacao")
     private LocalDate dataCriacao;
     
+    @Transient
+    private BigDecimal utilizado;
     
+    
+    public Usina() {
+    	
+    }
 
-    public Integer getId() {
+    public Usina(Integer id, String nome, BigDecimal capacidadeProducao, String cpfCnpj, BigDecimal potencia,
+    		BigDecimal utilizado) {
+		
+		this.id = id;
+		this.nome = nome;
+		this.capacidadeProducao = capacidadeProducao;
+		this.cpfCnpj = cpfCnpj;
+		this.potencia = potencia;
+		this.utilizado = utilizado;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -135,6 +153,14 @@ public class Usina extends PanacheEntityBase{
 
 	public void setDataCriacao(LocalDate dataCriacao) {
 		this.dataCriacao = dataCriacao;
+	}
+
+	public BigDecimal getUtilizado() {
+		return utilizado;
+	}
+
+	public void setUtilizado(BigDecimal utilizado) {
+		this.utilizado = utilizado;
 	}
     
     

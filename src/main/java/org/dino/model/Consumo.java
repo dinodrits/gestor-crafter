@@ -8,7 +8,8 @@ import java.time.LocalDate;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class Consumos extends PanacheEntityBase{
+@Table(name = "Consumos")
+public class Consumo extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idConsumo", nullable = false)

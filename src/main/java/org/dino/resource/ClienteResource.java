@@ -1,5 +1,6 @@
 package org.dino.resource;
 
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -20,10 +21,16 @@ import org.dino.model.Contrato;
 
 import io.quarkus.panache.common.Parameters;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Path("/cliente")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ClienteResource {
+	
+	@Inject
+    ObjectMapper objectMapper;
 
 	@GET
     public List<Cliente> list() {
@@ -46,8 +53,8 @@ public class ClienteResource {
 
     @POST
     @Transactional
-    public Cliente create(Cliente cliente) {
-    	System.out.println(cliente);
+    public Cliente create(Cliente cliente) throws JsonProcessingException {
+    	System.out.println(objectMapper.writeValueAsString(cliente));
     	cliente.persist();
         return cliente;
     }

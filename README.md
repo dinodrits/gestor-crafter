@@ -1,5 +1,16 @@
 # gestor-crafter
 
+compilacao 
+jabba use openjdk@1.21.0
+
+./mvnw package
+
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus/sigeni-back .
+
+docker image save quarkus/sigeni-back -o sigeni-back.tar
+
+
+
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.

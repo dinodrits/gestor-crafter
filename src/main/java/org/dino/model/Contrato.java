@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-@Table(name = "contratos")
+@Table(name = "Contratos")
 public class Contrato extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +31,25 @@ public class Contrato extends PanacheEntityBase{
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCliente", nullable = false)
-    private Cliente idCliente;
+    @JsonBackReference
+    private Cliente cliente;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idUsina", nullable = false)
+    @JsonBackReference
+    private Usina usina;
 
     @Column(name = "qtdContratada")
     private Integer qtdContratada;
 
+    @Column(name = "qtdIsencao")
+    private Integer qtdIsencao;
+
     @Column(name = "diaVencimento")
     private Integer diaVencimento;
+    
+    @Column(name = "diaLeitura")
+    private Integer diaLeitura;
 
     public Integer getId() {
         return id;
@@ -77,15 +91,17 @@ public class Contrato extends PanacheEntityBase{
         this.valorAluguel = valorAluguel;
     }
 
-    public Cliente getIdCliente() {
-        return idCliente;
-    }
 
-    public void setIdCliente(Cliente idCliente) {
-        this.idCliente = idCliente;
-    }
 
-    public Integer getQtdContratada() {
+    public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Integer getQtdContratada() {
         return qtdContratada;
     }
 
@@ -100,5 +116,31 @@ public class Contrato extends PanacheEntityBase{
     public void setDiaVencimento(Integer diaVencimento) {
         this.diaVencimento = diaVencimento;
     }
+
+	public Integer getQtdIsencao() {
+		return qtdIsencao;
+	}
+
+	public void setQtdIsencao(Integer qtdIsencao) {
+		this.qtdIsencao = qtdIsencao;
+	}
+
+	public Integer getDiaLeitura() {
+		return diaLeitura;
+	}
+
+	public void setDiaLeitura(Integer diaLeitura) {
+		this.diaLeitura = diaLeitura;
+	}
+
+	public Usina getUsina() {
+		return usina;
+	}
+
+	public void setUsina(Usina usina) {
+		this.usina = usina;
+	}
+    
+    
 
 }

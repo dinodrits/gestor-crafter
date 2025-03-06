@@ -1,10 +1,13 @@
 package org.dino.model;
 
+import java.util.List;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 
@@ -48,6 +51,9 @@ public class Cliente  extends PanacheEntityBase{
     @Column(name = "classificacao", length = 2)
     private String classificacao;
 
+    @OneToMany(mappedBy = "cliente")
+    public List<Contrato> contratos;
+    
     public Integer getId() {
         return id;
     }
@@ -134,6 +140,14 @@ public class Cliente  extends PanacheEntityBase{
 
 	public void setClassificacao(String classificacao) {
 		this.classificacao = classificacao;
+	}
+
+	public List<Contrato> getContratos() {
+		return contratos;
+	}
+
+	public void setContratos(List<Contrato> contratos) {
+		this.contratos = contratos;
 	}
     
 	
