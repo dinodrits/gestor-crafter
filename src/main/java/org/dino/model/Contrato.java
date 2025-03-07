@@ -31,12 +31,12 @@ public class Contrato extends PanacheEntityBase{
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCliente", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("contrato-cliente")
     private Cliente cliente;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUsina", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("contrato-usina")
     private Usina usina;
 
     @Column(name = "qtdContratada")

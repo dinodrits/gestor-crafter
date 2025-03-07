@@ -17,20 +17,33 @@ public class Consumo extends PanacheEntityBase{
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idContrato", nullable = false)
-    private Contrato idContrato;
+    private Contrato contrato;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCliente", nullable = false)
-    private Cliente idCliente;
+    private Cliente cliente;
 
-    @Column(name = "consumo")
-    private Integer consumo;
-
+ 
     @Column(name = "valorTotal", precision = 10, scale = 2)
     private BigDecimal valorTotal;
+    
+    @Column(name = "injetado", precision = 10, scale = 2)
+    private BigDecimal injetado;
+    
+    @Column(name = "compensado", precision = 10, scale = 2)
+    private BigDecimal compensado;
+    
+    @Column(name = "consumido", precision = 10, scale = 2)
+    private BigDecimal consumido;
+    
+    @Column(name = "acumuladoMes", precision = 10, scale = 2)
+    private BigDecimal acumuladoMes;
 
     @Column(name = "valorUnitarioCeb", precision = 10, scale = 2)
     private BigDecimal valorUnitarioCeb;
+    
+    @Column(name = "desconto", precision = 10, scale = 2)
+    private BigDecimal desconto;
 
     @Column(name = "vencimento")
     private LocalDate vencimento;
@@ -55,31 +68,27 @@ public class Consumo extends PanacheEntityBase{
         this.id = id;
     }
 
-    public Contrato getIdContrato() {
-        return idContrato;
-    }
+    
 
-    public void setIdContrato(Contrato idContrato) {
-        this.idContrato = idContrato;
-    }
+ 
 
-    public Cliente getIdCliente() {
-        return idCliente;
-    }
+    public Contrato getContrato() {
+		return contrato;
+	}
 
-    public void setIdCliente(Cliente idCliente) {
-        this.idCliente = idCliente;
-    }
+	public void setContrato(Contrato contrato) {
+		this.contrato = contrato;
+	}
 
-    public Integer getConsumo() {
-        return consumo;
-    }
+	public Cliente getCliente() {
+		return cliente;
+	}
 
-    public void setConsumo(Integer consumo) {
-        this.consumo = consumo;
-    }
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
 
-    public BigDecimal getValorTotal() {
+	public BigDecimal getValorTotal() {
         return valorTotal;
     }
 
@@ -135,4 +144,45 @@ public class Consumo extends PanacheEntityBase{
         this.ano = ano;
     }
 
+	public BigDecimal getInjetado() {
+		return injetado;
+	}
+
+	public void setInjetado(BigDecimal injetado) {
+		this.injetado = injetado;
+	}
+
+	public BigDecimal getCompensado() {
+		return compensado;
+	}
+
+	public void setCompensado(BigDecimal compensado) {
+		this.compensado = compensado;
+	}
+
+	public BigDecimal getConsumido() {
+		return consumido;
+	}
+
+	public void setConsumido(BigDecimal consumido) {
+		this.consumido = consumido;
+	}
+
+	public BigDecimal getAcumuladoMes() {
+		return acumuladoMes;
+	}
+
+	public void setAcumuladoMes(BigDecimal acumuladoMes) {
+		this.acumuladoMes = acumuladoMes;
+	}
+
+	public BigDecimal getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(BigDecimal desconto) {
+		this.desconto = desconto;
+	}
+
+    
 }

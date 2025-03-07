@@ -11,6 +11,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import repository.UsinaRepository;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import org.dino.model.Contrato;
 import org.dino.model.Usina;
+import org.dino.resource.request.Resposta;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,18 +49,32 @@ public class ContratoResource {
 
     @POST
     @Transactional
-    public Contrato create(Contrato contrato) throws Exception {
+    public Response create(Contrato contrato) throws Exception {
     	System.out.println(objectMapper.writeValueAsString(contrato));
+    	System.out.println(contrato.getUsina().getId());
     	Usina usina = usinasRepository.getUsinasConsumo(contrato);
-    	if(usina.getUtilizado().subtract(new BigDecimal(contrato.getQtdContratada())).compareTo(BigDecimal.ZERO) > 0  ) {
+    	System.out.println(objectMapper.writeValueAsString(usina));
+    	boolean existeSobreposicao = Contrato.find(
+                "(dtInicio <= ?1 AND dtFim >= ?1) " + // Verifica se a data de início do novo contrato está dentro de um contrato existente
+                "OR (dtInicio <= ?2 AND dtFim >= ?2) " + // Verifica se a data de fim do novo contrato está dentro de um contrato existente
+                "OR (dtInicio >= ?1 AND dtFim <= ?2)", // Verifica se o novo contrato engloba completamente um contrato existente
+                contrato.getDtInicio(), contrato.getDtFim()
+            ).count() > 0;
+        if(existeSobreposicao) {
+        	Resposta resposta = new Resposta("Já existe contrato na data inserida.", 400);
+            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+        }
+    	if(usina == null || usina.getUtilizado().subtract(new BigDecimal(contrato.getQtdContratada())).compareTo(BigDecimal.ZERO) > 0  ) {
     		contrato.persist();
     		
     	}else {
-    		throw new Exception("Não tem kw disponível para essa contratação.");
+    		Resposta resposta = new Resposta("Não tem kw disponível para essa contratação.", 400);
+            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+    		
     	}
     	
         //return Response.created(URI.create("/contrato/" + contrato.getId())).build();
-        return contrato;
+        return Response.status(Response.Status.OK).entity(contrato).build();
     }
 
     @PUT

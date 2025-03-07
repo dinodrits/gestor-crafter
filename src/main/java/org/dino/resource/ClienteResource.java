@@ -40,7 +40,7 @@ public class ClienteResource {
 	@GET
     @Path("contratos/{id}")
     public List<Contrato> getContratos(Long id) {
-		return  Contrato.find("idCliente.id = :id",
+		return  Contrato.find("cliente.id = :id",
 		         Parameters.with("id", id)).list();
         
     }
