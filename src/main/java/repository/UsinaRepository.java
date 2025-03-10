@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.dino.model.Contrato;
 import org.dino.model.Usina;
+import org.dino.model.UsinaContrato;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,8 +17,10 @@ import jakarta.persistence.NoResultException;
 public class UsinaRepository implements PanacheRepository<Usina>{
 
 	public List<Usina> getUsinasConsumo(){
-		List<Object[]> resultList = getEntityManager().createNativeQuery("SELECT u.idUsina idUsina,u.nome nome, u.potencialProducao potencialProducao, u.cpfCnpj ,u.potencia potencia, u.potencialProducao - COALESCE(SUM(c.qtdContratada), 0) utilizado FROM Usinas u "
-				+ "	LEFT JOIN Contratos c ON u.idUsina = c.idUsina "
+		List<Object[]> resultList = getEntityManager().createNativeQuery("SELECT u.idUsina idUsina,u.nome nome, u.potencialProducao potencialProducao, u.cpfCnpj cpfCnpj, u.potencia potencia,u.potencialProducao - COALESCE(SUM(uc.qtdContratada), 0) disponivel "
+				+ "FROM Usinas u "
+				+ "	LEFT JOIN UsinasContratos uc ON u.idUsina = uc.idUsina "
+				+ "	LEFT JOIN Contratos c ON uc.idContrato = c.idContrato "
 				+ "	WHERE (c.dtInicio < NOW() AND c.dtFim > NOW() ) OR (c.dtInicio IS NULL AND c.dtFim IS NULL) "
 				+ "GROUP BY u.idUsina,u.nome, u.potencialProducao, u.cpfCnpj, u.potencia").getResultList();
 		
@@ -37,14 +40,16 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 	}
 
 	
-	public Usina getUsinasConsumo(Contrato contrato){
+	public Usina getUsinasConsumo(UsinaContrato contrato){
 		
 		Object[] result;
 		try {
-			result = (Object[]) getEntityManager().createNativeQuery("SELECT u.idUsina idUsina,u.nome nome, u.potencialProducao potencialProducao, u.cpfCnpj ,u.potencia potencia, u.potencialProducao - COALESCE(SUM(c.qtdContratada), 0) utilizado FROM Usinas u "
-					+ "	LEFT JOIN Contratos c ON u.idUsina = c.idUsina "
-					+ "	WHERE ((c.dtInicio < :dtInicio AND c.dtFim > :dtInicio ) OR (c.dtInicio IS NULL AND c.dtFim IS NULL)) and u.idUsina = :idUsina "
-					+ "GROUP BY u.idUsina,u.nome, u.potencialProducao, u.cpfCnpj, u.potencia").setParameter("idUsina", contrato.getUsina().getId()).setParameter("dtInicio", contrato.getDtInicio()).getSingleResult();
+			result = (Object[]) getEntityManager().createNativeQuery("SELECT u.idUsina idUsina,u.nome nome, u.potencialProducao potencialProducao,u.cpfCnpj cpfCnpj, u.potencia potencia,u.potencialProducao - COALESCE(SUM(uc.qtdContratada), 0) utilizado "
+					+ "FROM Usinas u  "
+					+ "	LEFT JOIN UsinasContratos uc ON u.idUsina = uc.idUsina "
+					+ "	LEFT JOIN Contratos c ON uc.idContrato = c.idContrato "
+					+ "	WHERE ((c.dtInicio < NOW() AND c.dtFim > NOW() ) OR (c.dtInicio IS NULL AND c.dtFim IS NULL)) and uc.idUsina = :idUsina  "
+					+ "GROUP BY u.idUsina,u.nome, u.potencialProducao,u.cpfCnpj, u.potencia").setParameter("idUsina", contrato.getUsina().getId()).getSingleResult();
 			Usina u = new Usina(
 					Integer.parseInt( result[0].toString().trim()),  // id
 					(String) result[1].toString().trim(),  // nome

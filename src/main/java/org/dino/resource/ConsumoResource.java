@@ -1,5 +1,15 @@
 package org.dino.resource;
 
+import java.util.List;
+
+import org.dino.model.Consumo;
+import org.dino.model.Contrato;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.panache.common.Parameters;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -10,18 +20,19 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import repository.ContratoRepository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.dino.model.Consumo;
-import org.dino.model.Contrato;
 
 @Path("/consumo")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ConsumoResource {
+	
+	@Inject
+	ContratoRepository contratoRepository;
+	
+	@Inject
+    ObjectMapper objectMapper;
 
 	@GET
     public List<Consumo> list() {
@@ -36,15 +47,10 @@ public class ConsumoResource {
 
     @POST
     @Transactional
-    public Consumo create(Consumo consumo) {
-    	
-    	Map<String, Object> params = new HashMap<>();
-    	params.put("ano", consumo.getAno());
-    	params.put("mes", consumo.getMes());
-    	params.put("cliente.id", consumo.getCliente().getId());
-    	params.put("contrato.id", consumo.getContrato().getId());
-    	Consumo.find("name = :name and status = :status", params);
-    	Consumo.list("ano", consumo.getAno());
+    public Consumo create(Consumo consumo) throws JsonProcessingException {
+    	System.out.println(objectMapper.writeValueAsString(consumo));
+    	Contrato c =contratoRepository.getContratoConsumo(consumo);
+    	consumo.setContrato(c);
     	consumo.persist();
         //return Response.created(URI.create("/contrato/" + contrato.getId())).build();
         return consumo;

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -34,10 +36,14 @@ public class Contrato extends PanacheEntityBase{
     @JsonBackReference("contrato-cliente")
     private Cliente cliente;
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idUsina", nullable = false)
-    @JsonBackReference("contrato-usina")
-    private Usina usina;
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "idUsina", nullable = false)
+//    @JsonBackReference("contrato-usina")
+//    private Usina usina;
+    
+    @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
+   // @JsonBackReference("contrato-usina-contrato")
+    private List<UsinaContrato> usinas;
 
     @Column(name = "qtdContratada")
     private Integer qtdContratada;
@@ -50,6 +56,8 @@ public class Contrato extends PanacheEntityBase{
     
     @Column(name = "diaLeitura")
     private Integer diaLeitura;
+    
+
 
     public Integer getId() {
         return id;
@@ -68,7 +76,7 @@ public class Contrato extends PanacheEntityBase{
     }
 
     public LocalDate getDtInicio() {
-        return dtInicio;
+    	return dtInicio;
     }
 
     public void setDtInicio(LocalDate dtInicio) {
@@ -90,10 +98,11 @@ public class Contrato extends PanacheEntityBase{
     public void setValorAluguel(BigDecimal valorAluguel) {
         this.valorAluguel = valorAluguel;
     }
+    
 
 
 
-    public Cliente getCliente() {
+	public Cliente getCliente() {
 		return cliente;
 	}
 
@@ -133,14 +142,14 @@ public class Contrato extends PanacheEntityBase{
 		this.diaLeitura = diaLeitura;
 	}
 
-	public Usina getUsina() {
-		return usina;
+	public List<UsinaContrato> getUsinas() {
+		return usinas;
 	}
 
-	public void setUsina(Usina usina) {
-		this.usina = usina;
+	public void setUsinas(List<UsinaContrato> usinas) {
+		this.usinas = usinas;
 	}
-    
-    
+	
+	
 
 }

@@ -1,13 +1,18 @@
 package org.dino.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
@@ -49,7 +54,11 @@ public class Usina extends PanacheEntityBase{
     private LocalDate dataCriacao;
     
     @Transient
-    private BigDecimal utilizado;
+    private BigDecimal disponivel;
+    
+    @OneToMany(mappedBy = "usina", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference("contrato-cliente")
+    private List<UsinaContrato> contratos;
     
     
     public Usina() {
@@ -57,14 +66,14 @@ public class Usina extends PanacheEntityBase{
     }
 
     public Usina(Integer id, String nome, BigDecimal capacidadeProducao, String cpfCnpj, BigDecimal potencia,
-    		BigDecimal utilizado) {
+    		BigDecimal disponivel) {
 		
 		this.id = id;
 		this.nome = nome;
 		this.capacidadeProducao = capacidadeProducao;
 		this.cpfCnpj = cpfCnpj;
 		this.potencia = potencia;
-		this.utilizado = utilizado;
+		this.disponivel = disponivel;
 	}
 
 	public Integer getId() {
@@ -155,12 +164,22 @@ public class Usina extends PanacheEntityBase{
 		this.dataCriacao = dataCriacao;
 	}
 
-	public BigDecimal getUtilizado() {
-		return utilizado;
+	
+
+	public BigDecimal getDisponivel() {
+		return disponivel;
 	}
 
-	public void setUtilizado(BigDecimal utilizado) {
-		this.utilizado = utilizado;
+	public void setDisponivel(BigDecimal disponivel) {
+		this.disponivel = disponivel;
+	}
+
+	public List<UsinaContrato> getContratos() {
+		return contratos;
+	}
+
+	public void setContratos(List<UsinaContrato> contratos) {
+		this.contratos = contratos;
 	}
     
     

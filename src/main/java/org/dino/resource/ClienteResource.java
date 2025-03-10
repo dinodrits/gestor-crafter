@@ -17,6 +17,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.dino.model.Cliente;
+import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 
 import io.quarkus.panache.common.Parameters;
@@ -45,10 +46,20 @@ public class ClienteResource {
         
     }
 	
+	@GET
+    @Path("consumos/{id}")
+    public List<Contrato> getConsumos(Long id) {
+		return  Consumo.find("cliente.id = :id",
+		         Parameters.with("id", id)).list();
+        
+    }
+	
     @GET
     @Path("/{id}")
-    public Cliente get(Long id) {
-        return Cliente.findById(id);
+    public Cliente get(Long id) throws JsonProcessingException {
+    	Cliente c = Cliente.findById(id);
+    	System.out.println(objectMapper.writeValueAsString(c));
+    	return c;
     }
 
     @POST

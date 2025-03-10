@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.dino.model.Contrato;
 import org.dino.model.Usina;
+import org.dino.model.UsinaContrato;
+import org.dino.resource.request.CadastroContratoRequest;
 import org.dino.resource.request.Resposta;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,32 +51,61 @@ public class ContratoResource {
 
     @POST
     @Transactional
-    public Response create(Contrato contrato) throws Exception {
-    	System.out.println(objectMapper.writeValueAsString(contrato));
-    	System.out.println(contrato.getUsina().getId());
-    	Usina usina = usinasRepository.getUsinasConsumo(contrato);
-    	System.out.println(objectMapper.writeValueAsString(usina));
-    	boolean existeSobreposicao = Contrato.find(
-                "(dtInicio <= ?1 AND dtFim >= ?1) " + // Verifica se a data de início do novo contrato está dentro de um contrato existente
-                "OR (dtInicio <= ?2 AND dtFim >= ?2) " + // Verifica se a data de fim do novo contrato está dentro de um contrato existente
-                "OR (dtInicio >= ?1 AND dtFim <= ?2)", // Verifica se o novo contrato engloba completamente um contrato existente
-                contrato.getDtInicio(), contrato.getDtFim()
-            ).count() > 0;
-        if(existeSobreposicao) {
-        	Resposta resposta = new Resposta("Já existe contrato na data inserida.", 400);
-            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
-        }
-    	if(usina == null || usina.getUtilizado().subtract(new BigDecimal(contrato.getQtdContratada())).compareTo(BigDecimal.ZERO) > 0  ) {
-    		contrato.persist();
-    		
+    public Response create(CadastroContratoRequest requestContrato) throws Exception {
+    	System.out.println(objectMapper.writeValueAsString(requestContrato));
+    	//System.out.println(contrato.getUsina().getId());
+    	
+    	if(requestContrato.getContrato().getId() == null || requestContrato.getContrato().getId() == 0) {
+	    	boolean existeSobreposicao = Contrato.find(
+	                "(dtInicio <= ?1 AND dtFim >= ?1) " + // Verifica se a data de início do novo contrato está dentro de um contrato existente
+	                "OR (dtInicio <= ?2 AND dtFim >= ?2) " + // Verifica se a data de fim do novo contrato está dentro de um contrato existente
+	                "OR (dtInicio >= ?1 AND dtFim <= ?2)", // Verifica se o novo contrato engloba completamente um contrato existente
+	                requestContrato.getContrato().getDtInicio(), requestContrato.getContrato().getDtFim()
+	            ).count() > 0;
+	        if(existeSobreposicao) {
+	        	Resposta resposta = new Resposta("Já existe contrato na data inserida.", 400);
+	            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+	        }
+	        requestContrato.getContrato().persist();
     	}else {
-    		Resposta resposta = new Resposta("Não tem kw disponível para essa contratação.", 400);
-            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
-    		
+    		Contrato entity = Contrato.findById(requestContrato.getContrato().getId());
+    		entity.setDiaLeitura(requestContrato.getContrato().getDiaLeitura());
+    		entity.setDiaVencimento(requestContrato.getContrato().getDiaVencimento());
+    		entity.setDtFim(requestContrato.getContrato().getDtFim());
+    		entity.setDtInicio(requestContrato.getContrato().getDtInicio());
+    		entity.setPrazo(requestContrato.getContrato().getPrazo());
+    		entity.setQtdContratada(requestContrato.getContrato().getQtdContratada());
+    		entity.setQtdIsencao(requestContrato.getContrato().getQtdIsencao());
+    		entity.setValorAluguel(requestContrato.getContrato().getValorAluguel());
     	}
+        for (UsinaContrato usinaContrato : requestContrato.getUsinas()) {
+        	Usina usina = usinasRepository.getUsinasConsumo(usinaContrato);
+        	usinaContrato.setContrato(requestContrato.getContrato());
+        	System.out.println(objectMapper.writeValueAsString(usinaContrato));
+        	if(requestContrato.isVerificaDisponibilidade()) {
+        		if(usinaContrato.getId() == null) {
+		        	if(usina == null || usina.getDisponivel().subtract(new BigDecimal(requestContrato.getContrato().getQtdContratada())).compareTo(BigDecimal.ZERO) > 0  ) {
+							usinaContrato.persist();
+			    		
+			    	}else {
+			    		Resposta resposta = new Resposta("Não tem kw disponível para essa contratação na usina "+usina.getNome(), 400);
+			            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+			    		
+			    	}
+        		}else {
+        			UsinaContrato entity = UsinaContrato.findById(usinaContrato.getId());
+        			entity.setCliente(usinaContrato.getCliente());
+        			entity.setContrato(usinaContrato.getContrato());
+        			entity.setQtdContratada(usinaContrato.getQtdContratada());
+        			entity.persist();
+        		}
+        	}else {
+        		usinaContrato.persist();
+        	}
+        }
     	
         //return Response.created(URI.create("/contrato/" + contrato.getId())).build();
-        return Response.status(Response.Status.OK).entity(contrato).build();
+        return Response.status(Response.Status.OK).entity(requestContrato).build();
     }
 
     @PUT
