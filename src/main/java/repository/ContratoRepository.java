@@ -50,4 +50,23 @@ public class ContratoRepository implements PanacheRepository<Usina>{
 		
 		
 	}
+	
+	public Contrato getContratoVigente(Long id,Integer mes, Integer ano) {
+		Object[] result;
+		LocalDate data = LocalDate.of(ano,mes,1);
+		
+		try {
+			result =  (Object[]) getEntityManager().createNativeQuery("SELECT * FROM Contratos c WHERE c.idCliente = :idCliente and  :data BETWEEN c.dtInicio AND c.dtFim").setParameter("idCliente", id).setParameter("data", data).getSingleResult();
+			
+		}catch (jakarta.persistence.NoResultException e) {
+			// TODO: handle exception
+			
+			data = LocalDate.of(ano,mes,28);
+			result = (Object[]) getEntityManager().createNativeQuery("SELECT * FROM Contratos c WHERE c.idCliente = :idCliente and  :data BETWEEN c.dtInicio AND c.dtFim").setParameter("idCliente", id).setParameter("data", data).getSingleResult();
+			
+		}
+		Contrato c = new Contrato();
+		c.setId(Integer.parseInt( result[0].toString().trim()));
+		return c;
+	}
 }

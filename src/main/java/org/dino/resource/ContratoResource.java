@@ -12,6 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import repository.ContratoRepository;
 import repository.UsinaRepository;
 
 import java.math.BigDecimal;
@@ -37,6 +38,8 @@ public class ContratoResource {
 	
 	@Inject
 	UsinaRepository usinasRepository;
+	@Inject
+	ContratoRepository contratoRepository;
 
 	@GET
     public List<Contrato> list() {
@@ -47,6 +50,20 @@ public class ContratoResource {
     @Path("/{id}")
     public Contrato get(Long id) {
         return Contrato.findById(id);
+    }
+    
+    @GET
+    @Path("/{id}/{mes}/{ano}")
+    public Response get(Long id,Integer mes,Integer ano) {
+    	
+    	try {
+    		return Response.status(Response.Status.OK).entity(contratoRepository.getContratoVigente(id,mes,ano)).build();
+    		
+    	}catch (jakarta.persistence.NoResultException e) {
+    		Resposta resposta = new Resposta("Cliente sem contrato vigente para o mês selecionado.", 400);
+            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+		}
+        
     }
 
     @POST

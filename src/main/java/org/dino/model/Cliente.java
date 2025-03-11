@@ -52,6 +52,9 @@ public class Cliente  extends PanacheEntityBase{
     
     @Column(name = "classificacao", length = 2)
     private String classificacao;
+    
+    @Column(name = "saldoAcumulado")
+    private Integer saldoAcumulado;
 
     @OneToMany(mappedBy = "cliente")
     @JsonBackReference("contrato")
@@ -151,6 +154,14 @@ public class Cliente  extends PanacheEntityBase{
 
 	public void setContratos(List<Contrato> contratos) {
 		this.contratos = contratos;
+	}
+
+	public Integer getSaldoAcumulado() {
+		return saldoAcumulado;
+	}
+
+	public void setSaldoAcumulado(Integer saldoAcumulado) {
+		this.saldoAcumulado = saldoAcumulado;
 	}
     
 	
