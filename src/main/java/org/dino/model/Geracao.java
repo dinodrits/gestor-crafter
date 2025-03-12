@@ -7,12 +7,13 @@ import jakarta.persistence.*;
 @Table(name = "Geracoes")
 public class Geracao extends PanacheEntityBase{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idgeracoes", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUsina", nullable = false)
-    private Usina idUsina;
+    private Usina usina;
 
     @Column(name = "mes")
     private Integer mes;
@@ -31,15 +32,17 @@ public class Geracao extends PanacheEntityBase{
         this.id = id;
     }
 
-    public Usina getIdUsina() {
-        return idUsina;
-    }
+    
 
-    public void setIdUsina(Usina idUsina) {
-        this.idUsina = idUsina;
-    }
+    public Usina getUsina() {
+		return usina;
+	}
 
-    public Integer getMes() {
+	public void setUsina(Usina usina) {
+		this.usina = usina;
+	}
+
+	public Integer getMes() {
         return mes;
     }
 

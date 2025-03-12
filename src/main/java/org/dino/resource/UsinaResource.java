@@ -3,8 +3,12 @@ package org.dino.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dino.model.Consumo;
+import org.dino.model.Contrato;
+import org.dino.model.Geracao;
 import org.dino.model.Usina;
 
+import io.quarkus.panache.common.Parameters;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -48,6 +52,13 @@ public class UsinaResource {
 		
 	}
 	
+	@GET
+    @Path("geracoes/{id}")
+    public List<Geracao> getGeracoes(Long id) {
+		return  Geracao.find("usina.id = :id",
+		         Parameters.with("id", id)).list();
+        
+    }
 	
     @GET
     @Path("/{id}")
