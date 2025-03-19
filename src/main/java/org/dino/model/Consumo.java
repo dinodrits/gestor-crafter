@@ -27,6 +27,9 @@ public class Consumo extends PanacheEntityBase{
     @Column(name = "valorTotal", precision = 10, scale = 2)
     private BigDecimal valorTotal;
     
+    @Column(name = "valorKw", precision = 10, scale = 2)
+    private BigDecimal valorKw;
+    
     @Column(name = "injetado", precision = 10, scale = 2)
     private BigDecimal injetado;
     
@@ -182,6 +185,14 @@ public class Consumo extends PanacheEntityBase{
 
 	public void setDesconto(BigDecimal desconto) {
 		this.desconto = desconto;
+	}
+
+	public BigDecimal getValorKw() {
+		return valorKw;
+	}
+
+	public void setValorKw(BigDecimal valorKw) {
+		this.valorKw = valorKw;
 	}
 
     

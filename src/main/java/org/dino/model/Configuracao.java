@@ -11,7 +11,6 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 @Table(name = "Configuracao")
 public class Configuracao extends PanacheEntityBase{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idConfiguracao", nullable = false)
     private Integer id;
 
@@ -19,10 +18,10 @@ public class Configuracao extends PanacheEntityBase{
     private BigDecimal valorCeb;
     
     @Column(name = "fatorEconomiaArvore")
-    private Integer fatorEconomiaArvore;
+    private Float fatorEconomiaArvore;
     
     @Column(name = "fatorCarbonoEvitado")
-    private Integer fatorCarbonoEvitado;
+    private Float fatorCarbonoEvitado;
     
     
 
@@ -42,23 +41,23 @@ public class Configuracao extends PanacheEntityBase{
 		this.valorCeb = valorCeb;
 	}
 
-	public Integer getFatorEconomiaArvore() {
+	public Float getFatorEconomiaArvore() {
 		return fatorEconomiaArvore;
 	}
 
-	public void setFatorEconomiaArvore(Integer fatorEconomiaArvore) {
+	public void setFatorEconomiaArvore(Float fatorEconomiaArvore) {
 		this.fatorEconomiaArvore = fatorEconomiaArvore;
 	}
 
-	public Integer getFatorCarbonoEvitado() {
+	public Float getFatorCarbonoEvitado() {
 		return fatorCarbonoEvitado;
 	}
 
-	public void setFatorCarbonoEvitado(Integer fatorCarbonoEvitado) {
+	public void setFatorCarbonoEvitado(Float fatorCarbonoEvitado) {
 		this.fatorCarbonoEvitado = fatorCarbonoEvitado;
 	}
 
-    
+
 
  
 

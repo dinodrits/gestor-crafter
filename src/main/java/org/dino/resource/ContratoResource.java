@@ -12,6 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import repository.ConsumoRepository;
 import repository.ContratoRepository;
 import repository.UsinaRepository;
 
@@ -38,6 +39,8 @@ public class ContratoResource {
 	
 	@Inject
 	UsinaRepository usinasRepository;
+	
+	
 	@Inject
 	ContratoRepository contratoRepository;
 
@@ -93,7 +96,7 @@ public class ContratoResource {
     		entity.setPrazo(requestContrato.getContrato().getPrazo());
     		entity.setQtdContratada(requestContrato.getContrato().getQtdContratada());
     		entity.setQtdIsencao(requestContrato.getContrato().getQtdIsencao());
-    		entity.setValorAluguel(requestContrato.getContrato().getValorAluguel());
+    		
     	}
         for (UsinaContrato usinaContrato : requestContrato.getUsinas()) {
         	Usina usina = usinasRepository.getUsinasConsumo(usinaContrato);
@@ -140,7 +143,7 @@ public class ContratoResource {
         entity.setCliente(person.getCliente());
         entity.setPrazo(person.getPrazo());
         entity.setQtdContratada(person.getQtdContratada());
-        entity.setValorAluguel(entity.getValorAluguel());
+        
         
         
         return entity;

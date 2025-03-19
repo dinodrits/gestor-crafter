@@ -28,8 +28,7 @@ public class Contrato extends PanacheEntityBase{
     @Column(name = "dtFim")
     private LocalDate dtFim;
 
-    @Column(name = "valorAluguel", precision = 10, scale = 2)
-    private BigDecimal valorAluguel;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCliente", nullable = false)
@@ -91,13 +90,7 @@ public class Contrato extends PanacheEntityBase{
         this.dtFim = dtFim;
     }
 
-    public BigDecimal getValorAluguel() {
-        return valorAluguel;
-    }
 
-    public void setValorAluguel(BigDecimal valorAluguel) {
-        this.valorAluguel = valorAluguel;
-    }
     
 
 

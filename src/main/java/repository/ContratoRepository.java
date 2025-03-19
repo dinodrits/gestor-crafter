@@ -67,6 +67,7 @@ public class ContratoRepository implements PanacheRepository<Usina>{
 		}
 		Contrato c = new Contrato();
 		c.setId(Integer.parseInt( result[0].toString().trim()));
-		return c;
+		return Contrato.findById(c.getId());
+		
 	}
 }

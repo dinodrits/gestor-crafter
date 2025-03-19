@@ -2,6 +2,8 @@ package org.dino.model;
 
 import java.util.List;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -15,6 +17,7 @@ import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "Clientes")
+@Audited
 public class Cliente  extends PanacheEntityBase{
     
 	@Id
