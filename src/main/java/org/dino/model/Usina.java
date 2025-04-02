@@ -12,12 +12,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
 @Table(name = "Usinas")
+@Audited
 public class Usina extends PanacheEntityBase{
     @Id
     @Column(name = "idUsina", nullable = false)

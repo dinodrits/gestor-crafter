@@ -1,10 +1,13 @@
 package org.dino.model;
 
+import org.hibernate.envers.Audited;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Geracoes")
+@Audited
 public class Geracao extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

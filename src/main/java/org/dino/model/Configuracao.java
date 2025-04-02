@@ -5,10 +5,13 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.hibernate.envers.Audited;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
 @Table(name = "Configuracao")
+@Audited
 public class Configuracao extends PanacheEntityBase{
     @Id
     @Column(name = "idConfiguracao", nullable = false)

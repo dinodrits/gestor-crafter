@@ -1,7 +1,10 @@
 package org.dino.resource;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
@@ -57,8 +60,50 @@ public class UsinaResource {
     public List<Geracao> getGeracoes(Long id) {
 		return  Geracao.find("usina.id = :id",
 		         Parameters.with("id", id)).list();
+    }
+	
+	@GET
+    @Path("qtdInjetada/{id}/{mes}/{ano}")
+    public BigDecimal getQtdInjetada(Long id,int mes, int ano) {
+		
+		return  usinasRepository.getQtdInjetada(id, mes, ano);
         
     }
+	
+	@GET
+    @Path("mediaGeracao/{id}")
+    public BigDecimal getMediaGeracao(Long id) {
+		return  usinasRepository.getMediaGeracao(id);
+        
+    }
+	@GET
+	@Path("mediaInjetada/{id}")
+	public BigDecimal getMediaInjetada(Long id) {
+		return  usinasRepository.getMediaInjetada(id);
+		
+	}
+	@GET
+	@Path("totalContrato/{id}")
+	public BigDecimal getTotalContrato(Long id) {
+		return  usinasRepository.getTotalContratos(id);
+		
+	}
+	
+	@GET
+    @Path("qtdGerada/{id}/{mes}/{ano}")
+    public Integer getQtdGerada(Long id,int mes, int ano) {
+		
+		Map<String, Object> params = new HashMap<>();
+    	params.put("mes", mes);
+    	params.put("ano", ano);
+    	params.put("id",id);
+    	Geracao g = Geracao.find("usina.id = :id and mes = :mes and ano = :ano",
+    			params).singleResult();
+		
+		return g.getQtdGerada();
+        
+    }
+	
 	
     @GET
     @Path("/{id}")

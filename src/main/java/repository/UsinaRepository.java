@@ -67,8 +67,55 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 		
 		return null;
 		
-
+	}
+	
+	public BigDecimal getQtdInjetada(Long id, int mes, int ano){
+		
+		BigDecimal result;
+		try {
+			result = (BigDecimal) getEntityManager().createNativeQuery("SELECT SUM(injetado) FROM Consumos WHERE idUsina = :id AND mes = :mes AND ano = :ano").setParameter("id", id).setParameter("mes", mes).setParameter("ano", ano).getSingleResult();
+			
+			return result;
+		} catch (NoResultException e) {
+			// TODO Auto-generated catch block
+			return BigDecimal.ZERO;
+		}
+		
 		
 		
 	}
+
+
+	public BigDecimal getMediaGeracao(Long id) {
+		// TODO Auto-generated method stub
+		try {
+			return (BigDecimal) getEntityManager().createNativeQuery("SELECT AVG(qtdGerada) FROM Geracoes WHERE idUsina = :id ").setParameter("id", id).getSingleResult();
+		} catch (NoResultException e) {
+			// TODO Auto-generated catch block
+			return BigDecimal.ZERO;
+		}
+		
+	}
+	public BigDecimal getMediaInjetada(Long id) {
+		// TODO Auto-generated method stub
+		try {
+			return (BigDecimal) getEntityManager().createNativeQuery("SELECT AVG(injetado) FROM Consumos WHERE idUsina = :id GROUP BY mes , ano").setParameter("id", id).getSingleResult();
+		} catch (NoResultException e) {
+			// TODO Auto-generated catch block
+			return BigDecimal.ZERO;
+		}
+		
+	}
+	
+	public BigDecimal getTotalContratos(Long id) {
+		// TODO Auto-generated method stub
+		try {
+			return (BigDecimal) getEntityManager().createNativeQuery("SELECT SUM(uc.qtdContratada) FROM Contratos c INNER join UsinasContratos uc ON c.idContrato = uc.idContrato  WHERE uc.idUsina = :id AND NOW() BETWEEN c.dtInicio AND c.dtFim").setParameter("id", id).getSingleResult();
+		} catch (NoResultException e) {
+			// TODO Auto-generated catch block
+			return BigDecimal.ZERO;
+		}
+		
+	}
+	
 }

@@ -5,10 +5,13 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.hibernate.envers.Audited;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
 @Table(name = "Consumos")
+@Audited
 public class Consumo extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,6 +65,11 @@ public class Consumo extends PanacheEntityBase{
 
     @Column(name = "ano")
     private Integer ano;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idUsina", nullable = false)
+    //@JsonBackReference("usinaContato-usina")
+    private Usina usina;
 
     public Integer getId() {
         return id;
@@ -75,7 +83,15 @@ public class Consumo extends PanacheEntityBase{
 
  
 
-    public Contrato getContrato() {
+    public Usina getUsina() {
+		return usina;
+	}
+
+	public void setUsina(Usina usina) {
+		this.usina = usina;
+	}
+
+	public Contrato getContrato() {
 		return contrato;
 	}
 

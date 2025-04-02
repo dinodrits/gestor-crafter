@@ -7,11 +7,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
+@Audited
 @Table(name = "Contratos")
 public class Contrato extends PanacheEntityBase{
     @Id

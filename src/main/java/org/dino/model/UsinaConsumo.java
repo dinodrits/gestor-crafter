@@ -9,72 +9,96 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-@Table(name = "UsinasContratos")
+@Table(name = "UsinasConsumo")
 @Audited
-public class UsinaContrato extends PanacheEntityBase{
+public class UsinaConsumo extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idUsinaContrato", nullable = false)
+    @Column(name = "idUsinaConsumo", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCliente", nullable = false)
-    @JsonBackReference("contrato-cliente")
+    @JsonBackReference("consumo-cliente")
     private Cliente cliente;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idContrato", nullable = false)
-    @JsonBackReference("usinaContato-contrato")
-    private Contrato contrato;
+    @JoinColumn(name = "idConsumo", nullable = false)
+    @JsonBackReference("usinaConsumo-consumo")
+    private Consumo consumo;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUsina", nullable = false)
     //@JsonBackReference("usinaContato-usina")
     private Usina usina;
+    
+  
 
-    @Column(name = "qtdContratada")
-    private Integer qtdContratada;
+    @Column(name = "qtdConsumida")
+    private Integer qtdConsumida;
+
+
 
 	public Integer getId() {
 		return id;
 	}
 
+
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+
 
 	public Cliente getCliente() {
 		return cliente;
 	}
 
+
+
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
 
-	public Contrato getContrato() {
-		return contrato;
+
+
+	public Consumo getConsumo() {
+		return consumo;
 	}
 
-	public void setContrato(Contrato contrato) {
-		this.contrato = contrato;
+
+
+	public void setConsumo(Consumo consumo) {
+		this.consumo = consumo;
 	}
+
+
 
 	public Usina getUsina() {
 		return usina;
 	}
 
+
+
 	public void setUsina(Usina usina) {
 		this.usina = usina;
 	}
 
-	public Integer getQtdContratada() {
-		return qtdContratada;
+
+
+	public Integer getQtdConsumida() {
+		return qtdConsumida;
 	}
 
-	public void setQtdContratada(Integer qtdContratada) {
-		this.qtdContratada = qtdContratada;
+
+
+	public void setQtdConsumida(Integer qtdConsumida) {
+		this.qtdConsumida = qtdConsumida;
 	}
     
+
+	
     
 
 }

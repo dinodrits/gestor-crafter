@@ -63,6 +63,10 @@ public class Cliente  extends PanacheEntityBase{
     @JsonBackReference("contrato")
     public List<Contrato> contratos;
     
+    
+    @Column(name = "token", length = 150)
+    private String token;
+    
     public Integer getId() {
         return id;
     }
@@ -165,6 +169,14 @@ public class Cliente  extends PanacheEntityBase{
 
 	public void setSaldoAcumulado(Integer saldoAcumulado) {
 		this.saldoAcumulado = saldoAcumulado;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
     
 	

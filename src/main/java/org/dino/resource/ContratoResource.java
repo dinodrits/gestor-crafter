@@ -77,15 +77,16 @@ public class ContratoResource {
     	
     	if(requestContrato.getContrato().getId() == null || requestContrato.getContrato().getId() == 0) {
 	    	boolean existeSobreposicao = Contrato.find(
-	                "(dtInicio <= ?1 AND dtFim >= ?1) " + // Verifica se a data de início do novo contrato está dentro de um contrato existente
+	                "((dtInicio <= ?1 AND dtFim >= ?1) " + // Verifica se a data de início do novo contrato está dentro de um contrato existente
 	                "OR (dtInicio <= ?2 AND dtFim >= ?2) " + // Verifica se a data de fim do novo contrato está dentro de um contrato existente
-	                "OR (dtInicio >= ?1 AND dtFim <= ?2)", // Verifica se o novo contrato engloba completamente um contrato existente
-	                requestContrato.getContrato().getDtInicio(), requestContrato.getContrato().getDtFim()
+	                "OR (dtInicio >= ?1 AND dtFim <= ?2)) and cliente.id = ?3", // Verifica se o novo contrato engloba completamente um contrato existente
+	                requestContrato.getContrato().getDtInicio(), requestContrato.getContrato().getDtFim(),requestContrato.getCliente().getId()
 	            ).count() > 0;
 	        if(existeSobreposicao) {
 	        	Resposta resposta = new Resposta("Já existe contrato na data inserida.", 400);
 	            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
 	        }
+	        requestContrato.getContrato().setCliente(requestContrato.getCliente());
 	        requestContrato.getContrato().persist();
     	}else {
     		Contrato entity = Contrato.findById(requestContrato.getContrato().getId());

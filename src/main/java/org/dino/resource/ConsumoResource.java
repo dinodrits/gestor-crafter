@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dino.model.Cliente;
+import org.dino.model.Configuracao;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.resource.request.Resposta;
@@ -65,8 +66,12 @@ public class ConsumoResource {
     @GET
     @Path("/consumoAtual/{id}")
     public Consumo getConsumoAtual(Long id) {
+    	try {
         return Consumo.find("cliente.id = :id and mes = month(now()) and ano = year(now())",
 		         Parameters.with("id", id)).singleResult();
+    	}catch (Exception e) {
+			return null;
+		}
     }
     
     @GET
@@ -75,20 +80,32 @@ public class ConsumoResource {
         return consumoRepository.getValorMedioConsumokw(id);
     }
     
+    @GET
+    @Path("/fatura/{mes}/{ano}/{token}")
+    public List<Consumo> getFatura(int mes,int ano,String token) {
+    	List<Consumo> c = consumoRepository.getFatura(mes,ano,token);
+    	
+        return c;
+    }
     
-
+    
     @POST
     @Transactional
     public Response create(Consumo consumo) throws JsonProcessingException {
+    	System.out.println(objectMapper.writeValueAsString(consumo));
     	Map<String, Object> params = new HashMap<>();
     	params.put("mes", consumo.getMes());
     	params.put("ano", consumo.getAno());
-    	Long count = Consumo.count("mes = :mes and ano = :ano", params);
+    	params.put("id", consumo.getCliente().getId());
+    	params.put("idusina", consumo.getUsina().getId());
+    	Long count = Consumo.count("mes = :mes and ano = :ano and cliente.id= :id and usina.id = :idusina", params);
     	
     	if(count > 0) {
     		Resposta resposta = new Resposta("Já existe consumo registrado para o período selecionado", 400);
             return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
     	}
+    	Configuracao  config = Configuracao.findById(1);
+    	consumo.setValorUnitarioCeb(config.getValorCeb());
     	
     	consumo.setValorTotal((consumo.getInjetado().multiply(consumo.getValorKw())).subtract(consumo.getDesconto()));
     	consumo.persist();
@@ -114,13 +131,29 @@ public class ConsumoResource {
             throw new NotFoundException();
         }
         
-//        entity.setDtFim(person.getDtFim());
-//        entity.setDiaVencimento(person.getDiaVencimento());
-//        entity.setDtInicio(person.getDtInicio());
-//        entity.setIdCliente(person.getIdCliente());
-//        entity.setPrazo(person.getPrazo());
-//        entity.setQtdContratada(person.getQtdContratada());
-//        entity.setValorAluguel(entity.getValorAluguel());
+        //atualiza saldo do cliente
+        Cliente cliente = Cliente.findById(person.getCliente().getId());
+    	cliente.setSaldoAcumulado((cliente.getSaldoAcumulado() != null ? cliente.getSaldoAcumulado() : 0)   - ( entity.getCompensado().intValue() - entity.getConsumido().intValue() ));
+    	cliente.setSaldoAcumulado((cliente.getSaldoAcumulado() != null ? cliente.getSaldoAcumulado() : 0)   + ( person.getCompensado().intValue() - person.getConsumido().intValue() ));
+    	cliente.persist();
+    	
+    	Configuracao  config = Configuracao.findById(1);
+        
+        entity.setAcumuladoMes(person.getCompensado().subtract(entity.getConsumido()));
+        entity.setAno(person.getAno());
+        entity.setCliente(person.getCliente());
+        entity.setCompensado(person.getCompensado());
+        entity.setConsumido(person.getConsumido());
+        entity.setContrato(person.getContrato());
+      
+        entity.setDesconto(person.getDesconto());
+        entity.setInjetado(person.getInjetado());
+        entity.setMes(person.getMes());
+        entity.setValorKw(person.getValorKw());
+        entity.setValorTotal((person.getInjetado().multiply(person.getValorKw())).subtract(person.getDesconto()));
+        entity.setValorUnitarioCeb(config.getValorCeb());
+        entity.setVencimento(person.getVencimento());
+        
         
         
         return entity;

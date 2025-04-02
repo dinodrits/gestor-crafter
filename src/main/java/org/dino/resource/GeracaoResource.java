@@ -33,6 +33,7 @@ public class GeracaoResource {
 	@Inject
 	ContratoRepository contratoRepository;
 	
+	
 	@Inject
     ObjectMapper objectMapper;
 
@@ -55,7 +56,8 @@ public class GeracaoResource {
     	Map<String, Object> params = new HashMap<>();
     	params.put("mes", geracao.getMes());
     	params.put("ano", geracao.getAno());
-    	Long count = Geracao.count("mes = :mes and ano = :ano", params);
+    	params.put("id", geracao.getUsina().getId());
+    	Long count = Geracao.count("mes = :mes and ano = :ano and usina.id=:id", params);
     	
     	if(count > 0) {
     		Resposta resposta = new Resposta("Já existe geracao registrado para o período selecionado", 400);
@@ -70,19 +72,18 @@ public class GeracaoResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Geracao update(Long id, Geracao person) {
+    public Geracao update(Long id, Geracao person) throws JsonProcessingException {
+    	System.out.println(objectMapper.writeValueAsString(person));
     	Geracao entity = Geracao.findById(id);
         if(entity == null) {
             throw new NotFoundException();
         }
         
-//        entity.setDtFim(person.getDtFim());
-//        entity.setDiaVencimento(person.getDiaVencimento());
-//        entity.setDtInicio(person.getDtInicio());
-//        entity.setIdCliente(person.getIdCliente());
-//        entity.setPrazo(person.getPrazo());
-//        entity.setQtdContratada(person.getQtdContratada());
-//        entity.setValorAluguel(entity.getValorAluguel());
+        entity.setAno(person.getAno());
+        entity.setMes(person.getMes());
+        entity.setQtdGerada(person.getQtdGerada());
+        entity.setUsina(person.getUsina());
+        
         
         
         return entity;

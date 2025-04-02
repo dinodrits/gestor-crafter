@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import org.dino.model.Cliente;
 import org.dino.model.Consumo;
@@ -68,6 +69,7 @@ public class ClienteResource {
     @Transactional
     public Cliente create(Cliente cliente) throws JsonProcessingException {
     	System.out.println(objectMapper.writeValueAsString(cliente));
+    	cliente.setToken(UUID.randomUUID().toString().replaceAll("-", ""));
     	cliente.persist();
         return cliente;
     }
