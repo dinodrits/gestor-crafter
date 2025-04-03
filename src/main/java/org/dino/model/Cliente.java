@@ -50,6 +50,9 @@ public class Cliente  extends PanacheEntityBase{
     @Column(name = "cidade", length = 150)
     private String cidade;
     
+    @Column(name = "cep", length = 10)
+    private String cep;
+    
     @Column(name = "uf", length = 2)
     private String uf;
     
