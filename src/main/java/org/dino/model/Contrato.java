@@ -38,6 +38,11 @@ public class Contrato extends PanacheEntityBase{
     @JsonBackReference("contrato-cliente")
     private Cliente cliente;
     
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idDocumento", nullable = false)
+    private Documento documento;
+    
 //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
 //    @JoinColumn(name = "idUsina", nullable = false)
 //    @JsonBackReference("contrato-usina")
@@ -57,7 +62,10 @@ public class Contrato extends PanacheEntityBase{
     private Integer diaVencimento;
     
     @Column(name = "diaLeitura")
-    private Integer diaLeitura;
+    private String diaLeitura;
+    
+    @Column(name = "modalidadeFaturamento")
+    private String modalidadeFaturamento;
     
 
 
@@ -94,10 +102,6 @@ public class Contrato extends PanacheEntityBase{
     }
 
 
-    
-
-
-
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -130,11 +134,12 @@ public class Contrato extends PanacheEntityBase{
 		this.qtdIsencao = qtdIsencao;
 	}
 
-	public Integer getDiaLeitura() {
+	
+	public String getDiaLeitura() {
 		return diaLeitura;
 	}
 
-	public void setDiaLeitura(Integer diaLeitura) {
+	public void setDiaLeitura(String diaLeitura) {
 		this.diaLeitura = diaLeitura;
 	}
 
@@ -144,6 +149,22 @@ public class Contrato extends PanacheEntityBase{
 
 	public void setUsinas(List<UsinaContrato> usinas) {
 		this.usinas = usinas;
+	}
+
+	public Documento getDocumento() {
+		return documento;
+	}
+
+	public void setDocumento(Documento documento) {
+		this.documento = documento;
+	}
+
+	public String getModalidadeFaturamento() {
+		return modalidadeFaturamento;
+	}
+
+	public void setModalidadeFaturamento(String modalidadeFaturamento) {
+		this.modalidadeFaturamento = modalidadeFaturamento;
 	}
 	
 	

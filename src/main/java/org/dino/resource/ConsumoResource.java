@@ -1,6 +1,7 @@
 package org.dino.resource;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.dino.model.Cliente;
 import org.dino.model.Configuracao;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
+
 import org.dino.resource.request.Resposta;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -104,10 +106,14 @@ public class ConsumoResource {
     		Resposta resposta = new Resposta("Já existe consumo registrado para o período selecionado", 400);
             return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
     	}
-    	Configuracao  config = Configuracao.findById(1);
-    	consumo.setValorUnitarioCeb(config.getValorCeb());
     	
-    	consumo.setValorTotal((consumo.getInjetado().multiply(consumo.getValorKw())).subtract(consumo.getDesconto()));
+    	BigDecimal descontoValor =  consumo.getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN).multiply(consumo.getDesconto().divide(BigDecimal.valueOf(100).setScale(4, RoundingMode.HALF_DOWN)));
+    	
+    	System.out.println(descontoValor);
+    	System.out.println(consumo.getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
+    	consumo.setValorKw(consumo.getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
+    	
+    	consumo.setValorTotal((consumo.getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(consumo.getInjetado()));
     	consumo.persist();
     	
     	Cliente cliente = Cliente.findById(consumo.getCliente().getId());
@@ -125,8 +131,10 @@ public class ConsumoResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Consumo update(Long id, Consumo person) {
+    public Consumo update(Long id, Consumo person) throws JsonProcessingException {
+    	System.out.println(objectMapper.writeValueAsString(person));
     	Consumo entity = Consumo.findById(id);
+    	System.out.println(objectMapper.writeValueAsString(entity));
         if(entity == null) {
             throw new NotFoundException();
         }
@@ -137,9 +145,7 @@ public class ConsumoResource {
     	cliente.setSaldoAcumulado((cliente.getSaldoAcumulado() != null ? cliente.getSaldoAcumulado() : 0)   + ( person.getCompensado().intValue() - person.getConsumido().intValue() ));
     	cliente.persist();
     	
-    	Configuracao  config = Configuracao.findById(1);
-        
-        entity.setAcumuladoMes(person.getCompensado().subtract(entity.getConsumido()));
+    	entity.setAcumuladoMes(person.getCompensado().subtract(entity.getConsumido()));
         entity.setAno(person.getAno());
         entity.setCliente(person.getCliente());
         entity.setCompensado(person.getCompensado());
@@ -149,10 +155,22 @@ public class ConsumoResource {
         entity.setDesconto(person.getDesconto());
         entity.setInjetado(person.getInjetado());
         entity.setMes(person.getMes());
-        entity.setValorKw(person.getValorKw());
-        entity.setValorTotal((person.getInjetado().multiply(person.getValorKw())).subtract(person.getDesconto()));
-        entity.setValorUnitarioCeb(config.getValorCeb());
+        entity.setValorKw(person.getValorKw().setScale(4, RoundingMode.HALF_DOWN));
+        entity.setValorUnitarioCeb(person.getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN));
         entity.setVencimento(person.getVencimento());
+        BigDecimal descontoValor =  entity.getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN).multiply(entity.getDesconto().divide(BigDecimal.valueOf(100).setScale(4, RoundingMode.HALF_DOWN)));
+    	
+    
+        entity.setValorKw(entity.getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
+    	
+        entity.setValorTotal((entity.getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(entity.getInjetado()));
+        
+      
+    	
+    	entity.persist();
+    
+        
+        //entity.setValorTotal((person.getInjetado().multiply(person.getValorKw())).subtract(person.getDesconto()));
         
         
         
@@ -170,6 +188,21 @@ public class ConsumoResource {
         Cliente cliente = Cliente.findById(entity.getCliente().getId());
         cliente.setSaldoAcumulado((cliente.getSaldoAcumulado() != null ? cliente.getSaldoAcumulado() : 0)   - ( entity.getCompensado().intValue() - entity.getConsumido().intValue() ));
         entity.delete();
+    }
+    
+    
+    @GET
+    @Path("/consumos/{id}/{ano}")
+    public List<Consumo> getRelatorioCliente(Long id,int ano) {
+    	
+    	Map<String, Object> params = new HashMap<>();
+    	
+    	params.put("ano", ano);
+    	params.put("id", id);
+    	
+    	return consumoRepository.completarConsumosAno( Consumo.find("cliente.id = :id and ano=:ano",params).list(),ano);
+    	
+        
     }
 
 }

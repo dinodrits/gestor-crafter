@@ -10,6 +10,7 @@ import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.model.Geracao;
 import org.dino.model.Usina;
+import org.dino.resource.request.Resposta;
 
 import io.quarkus.panache.common.Parameters;
 import jakarta.inject.Inject;
@@ -23,6 +24,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import repository.UsinaRepository;
 
 @Path("/usina")
@@ -91,7 +93,7 @@ public class UsinaResource {
 	
 	@GET
     @Path("qtdGerada/{id}/{mes}/{ano}")
-    public Integer getQtdGerada(Long id,int mes, int ano) {
+    public BigDecimal getQtdGerada(Long id,int mes, int ano) {
 		
 		Map<String, Object> params = new HashMap<>();
     	params.put("mes", mes);
@@ -148,12 +150,23 @@ public class UsinaResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public void delete(Long id) {
+    public Response delete(Long id) {
         Usina entity = Usina.findById(id);
+        long cUsinas = Consumo.count("usina.id = :id",
+        Parameters.with("id", id));
+        
+        if(cUsinas > 0) {
+        	Resposta resposta = new Resposta("Existem consumos cadastrados nessa usina.", 400);
+            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+        }
+        
+        Geracao.delete("usina.id = :id",
+		         Parameters.with("id", id));
         if(entity == null) {
             throw new NotFoundException();
         }
         entity.delete();
+        return Response.status(Response.Status.OK).build(); 
     }
 
 }

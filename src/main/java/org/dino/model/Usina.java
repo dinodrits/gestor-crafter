@@ -3,6 +3,8 @@ package org.dino.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -23,6 +25,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 @Audited
 public class Usina extends PanacheEntityBase{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idUsina", nullable = false)
     private Integer id;
 
@@ -37,6 +40,9 @@ public class Usina extends PanacheEntityBase{
     
     @Column(name = "cidade", length = 150)
     private String cidade;
+    
+    @Column(name = "cep", length = 10)
+    private String cep;
     
     @Column(name = "uf", length = 2)
     private String uf;
@@ -183,6 +189,14 @@ public class Usina extends PanacheEntityBase{
 
 	public void setContratos(List<UsinaContrato> contratos) {
 		this.contratos = contratos;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
     
     

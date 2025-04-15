@@ -17,7 +17,7 @@ public class Configuracao extends PanacheEntityBase{
     @Column(name = "idConfiguracao", nullable = false)
     private Integer id;
 
-    @Column(name = "valorCeb", precision = 10, scale = 2)
+    @Column(name = "valorCeb", precision = 15, scale = 10)
     private BigDecimal valorCeb;
     
     @Column(name = "fatorEconomiaArvore")

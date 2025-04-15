@@ -7,6 +7,7 @@ import org.hibernate.envers.Audited;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -62,7 +63,7 @@ public class Cliente  extends PanacheEntityBase{
     @Column(name = "saldoAcumulado")
     private Integer saldoAcumulado;
 
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference("contrato")
     public List<Contrato> contratos;
     
@@ -180,6 +181,14 @@ public class Cliente  extends PanacheEntityBase{
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
     
 	

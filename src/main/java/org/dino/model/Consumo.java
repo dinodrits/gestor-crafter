@@ -30,7 +30,7 @@ public class Consumo extends PanacheEntityBase{
     @Column(name = "valorTotal", precision = 10, scale = 2)
     private BigDecimal valorTotal;
     
-    @Column(name = "valorKw", precision = 10, scale = 2)
+    @Column(name = "valorKw", precision = 10, scale = 4)
     private BigDecimal valorKw;
     
     @Column(name = "injetado", precision = 10, scale = 2)
@@ -45,10 +45,10 @@ public class Consumo extends PanacheEntityBase{
     @Column(name = "acumuladoMes", precision = 10, scale = 2)
     private BigDecimal acumuladoMes;
 
-    @Column(name = "valorUnitarioCeb", precision = 10, scale = 2)
+    @Column(name = "valorUnitarioCeb", precision = 10, scale = 4)
     private BigDecimal valorUnitarioCeb;
     
-    @Column(name = "desconto", precision = 10, scale = 2)
+    @Column(name = "desconto", precision = 10, scale = 4)
     private BigDecimal desconto;
 
     @Column(name = "vencimento")
@@ -78,10 +78,6 @@ public class Consumo extends PanacheEntityBase{
     public void setId(Integer id) {
         this.id = id;
     }
-
-    
-
- 
 
     public Usina getUsina() {
 		return usina;

@@ -1,5 +1,7 @@
 package org.dino.model;
 
+import java.math.BigDecimal;
+
 import org.hibernate.envers.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -24,8 +26,8 @@ public class Geracao extends PanacheEntityBase{
     @Column(name = "ano")
     private Integer ano;
 
-    @Column(name = "qtdGerada")
-    private Integer qtdGerada;
+    @Column(name = "qtdGerada", precision = 10, scale = 4)
+    private BigDecimal qtdGerada;
 
     public Integer getId() {
         return id;
@@ -61,12 +63,14 @@ public class Geracao extends PanacheEntityBase{
         this.ano = ano;
     }
 
-    public Integer getQtdGerada() {
-        return qtdGerada;
-    }
+	public BigDecimal getQtdGerada() {
+		return qtdGerada;
+	}
 
-    public void setQtdGerada(Integer qtdGerada) {
-        this.qtdGerada = qtdGerada;
-    }
+	public void setQtdGerada(BigDecimal qtdGerada) {
+		this.qtdGerada = qtdGerada;
+	}
+
+   
 
 }

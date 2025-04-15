@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import org.dino.model.Cliente;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.panache.common.Parameters;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,9 +56,30 @@ public class ClienteResource {
 		         Parameters.with("id", id)).list();
         
     }
+	@GET
+	@Path("gerarToken/{id}")
+	@Transactional
+	public String gerarToken(Long id) throws JsonProcessingException {
+		Cliente cliente = Cliente.findById(id);
+		cliente.setToken(UUID.randomUUID().toString().replaceAll("-", ""));
+		cliente.persist();
+		System.out.println(cliente.getToken());
+		System.out.println(objectMapper.writeValueAsString(cliente));
+		
+		return cliente.getToken();
+	}
 	
 	
 	
+    @GET
+    @Path("getClienteToken/{token}")
+    public Cliente getCliente(String token) throws JsonProcessingException {
+    	Cliente c = Cliente.find("token = :token",
+		         Parameters.with("token", token)).firstResult();
+    	System.out.println(objectMapper.writeValueAsString(c));
+    	return c;
+    }
+    
     @GET
     @Path("/{id}")
     public Cliente get(Long id) throws JsonProcessingException {
@@ -70,7 +93,7 @@ public class ClienteResource {
     public Cliente create(Cliente cliente) throws JsonProcessingException {
     	System.out.println(objectMapper.writeValueAsString(cliente));
     	cliente.setToken(UUID.randomUUID().toString().replaceAll("-", ""));
-    	cliente.persist();
+    	cliente.persistAndFlush();
         return cliente;
     }
 
@@ -93,7 +116,7 @@ public class ClienteResource {
         entity.setEndereco(person.getEndereco());
         entity.setNumeroUC(person.getNumeroUC());
         entity.setUf(person.getUf());
-        
+        entity.setToken(person.getToken());
         entity.persist();
         System.out.println(entity.getId());
         
@@ -105,6 +128,11 @@ public class ClienteResource {
     @Transactional
     public void delete(Long id) {
         Cliente entity = Cliente.findById(id);
+        entity.getContratos().clear();
+        
+        Consumo.delete("cliente.id = :id",
+		         Parameters.with("id", id));
+         //entity.getC
         if(entity == null) {
             throw new NotFoundException();
         }
