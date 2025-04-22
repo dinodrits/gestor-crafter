@@ -28,6 +28,9 @@ public class UnidadeConsumidora  extends PanacheEntityBase{
 
     @Column(name = "numeroUC", length = 45)
     private String numeroUC;
+    
+    @Column(name = "percentual", length = 45)
+    private String percentual;
 
    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -72,6 +75,16 @@ public class UnidadeConsumidora  extends PanacheEntityBase{
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
+	}
+
+
+	public String getPercentual() {
+		return percentual;
+	}
+
+
+	public void setPercentual(String percentual) {
+		this.percentual = percentual;
 	}
     
     
