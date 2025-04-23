@@ -1,5 +1,7 @@
 package org.dino.model;
 
+import java.math.BigDecimal;
+
 import org.hibernate.envers.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -29,8 +31,11 @@ public class UnidadeConsumidora  extends PanacheEntityBase{
     @Column(name = "numeroUC", length = 45)
     private String numeroUC;
     
-    @Column(name = "percentual", length = 45)
-    private String percentual;
+    @Column(name = "descricao", length = 150)
+    private String descricao;
+    
+    @Column(name = "percentual", precision = 10, scale = 4)
+    private BigDecimal percentual;
 
    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -78,15 +83,23 @@ public class UnidadeConsumidora  extends PanacheEntityBase{
 	}
 
 
-	public String getPercentual() {
+	public BigDecimal getPercentual() {
 		return percentual;
 	}
 
 
-	public void setPercentual(String percentual) {
+	public void setPercentual(BigDecimal percentual) {
 		this.percentual = percentual;
 	}
-    
-    
-    
+
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
 }
