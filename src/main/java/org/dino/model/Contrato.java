@@ -52,11 +52,14 @@ public class Contrato extends PanacheEntityBase{
    // @JsonBackReference("contrato-usina-contrato")
     private List<UsinaContrato> usinas;
 
-    @Column(name = "qtdContratada")
-    private Integer qtdContratada;
+    @Column(name = "qtdContratada", precision = 10, scale = 4)
+    private BigDecimal qtdContratada;
 
     @Column(name = "qtdIsencao")
     private Integer qtdIsencao;
+    
+    @Column(name = "valorIsencao", precision = 10, scale = 4)
+    private BigDecimal valorIsencao;
 
     @Column(name = "diaVencimento")
     private Integer diaVencimento;
@@ -110,13 +113,7 @@ public class Contrato extends PanacheEntityBase{
 		this.cliente = cliente;
 	}
 
-	public Integer getQtdContratada() {
-        return qtdContratada;
-    }
-
-    public void setQtdContratada(Integer qtdContratada) {
-        this.qtdContratada = qtdContratada;
-    }
+	
 
     public Integer getDiaVencimento() {
         return diaVencimento;

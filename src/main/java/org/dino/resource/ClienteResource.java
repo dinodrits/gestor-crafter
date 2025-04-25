@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.dino.model.Cliente;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
+import org.dino.model.UnidadeConsumidora;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.panache.common.Parameters;
@@ -56,6 +57,17 @@ public class ClienteResource {
 		         Parameters.with("id", id)).list();
         
     }
+	
+	@GET
+	@Path("unidadesConsumidoras/{id}")
+	public List<Consumo> getUnidadesConsumidoras(Long id) {
+		return  UnidadeConsumidora.find("cliente.id = :id",
+				Parameters.with("id", id)).list();
+		
+	}
+	
+	
+	
 	@GET
 	@Path("gerarToken/{id}")
 	@Transactional
@@ -109,12 +121,12 @@ public class ClienteResource {
         entity.setNome(person.getNome());
         entity.setClassificacao(person.getClassificacao());
         entity.setCidade(person.getCidade());
-        entity.setCodigoCliente(person.getCodigoCliente());
+   //     entity.setCodigoCliente(person.getCodigoCliente());
         entity.setContato(person.getContato());
         entity.setCpfCnpj(person.getCpfCnpj());
         entity.setEmail(person.getEmail());
         entity.setEndereco(person.getEndereco());
-        entity.setNumeroUC(person.getNumeroUC());
+     //   entity.setNumeroUC(person.getNumeroUC());
         entity.setUf(person.getUf());
         entity.setToken(person.getToken());
         entity.persist();

@@ -16,13 +16,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Clientes")
+@Table(name = "UnidadeConsumidoras")
 @Audited
 public class UnidadeConsumidora  extends PanacheEntityBase{
     
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idUnidadeConsumidora", nullable = false)
+	
     private Integer id;
 
     @Column(name = "codigoCliente", length = 45)

@@ -29,11 +29,7 @@ public class Cliente  extends PanacheEntityBase{
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "codigoCliente", length = 45)
-    private String codigoCliente;
 
-    @Column(name = "numeroUC", length = 45)
-    private String numeroUC;
 
     
     @Column(name = "cpfCnpj", length = 18)
@@ -119,21 +115,7 @@ public class Cliente  extends PanacheEntityBase{
 		this.endereco = endereco;
 	}
 
-	public String getCodigoCliente() {
-		return codigoCliente;
-	}
 
-	public void setCodigoCliente(String codigoCliente) {
-		this.codigoCliente = codigoCliente;
-	}
-
-	public String getNumeroUC() {
-		return numeroUC;
-	}
-
-	public void setNumeroUC(String numeroUC) {
-		this.numeroUC = numeroUC;
-	}
 
 	public String getCidade() {
 		return cidade;
