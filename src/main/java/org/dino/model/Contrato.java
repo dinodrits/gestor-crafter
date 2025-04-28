@@ -163,6 +163,24 @@ public class Contrato extends PanacheEntityBase{
 	public void setModalidadeFaturamento(String modalidadeFaturamento) {
 		this.modalidadeFaturamento = modalidadeFaturamento;
 	}
+
+	public BigDecimal getQtdContratada() {
+		return qtdContratada;
+	}
+
+	public void setQtdContratada(BigDecimal qtdContratada) {
+		this.qtdContratada = qtdContratada;
+	}
+
+	public BigDecimal getValorIsencao() {
+		return valorIsencao;
+	}
+
+	public void setValorIsencao(BigDecimal valorIsencao) {
+		this.valorIsencao = valorIsencao;
+	}
+	
+	
 	
 	
 

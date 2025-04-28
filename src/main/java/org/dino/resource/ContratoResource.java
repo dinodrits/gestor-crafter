@@ -105,7 +105,7 @@ public class ContratoResource {
         	System.out.println(objectMapper.writeValueAsString(usinaContrato));
         	if(requestContrato.isVerificaDisponibilidade()) {
         		if(usinaContrato.getId() == null) {
-		        	if(usina == null || usina.getDisponivel().subtract(new BigDecimal(requestContrato.getContrato().getQtdContratada())).compareTo(BigDecimal.ZERO) > 0  ) {
+		        	if(usina == null || usina.getDisponivel().subtract(requestContrato.getContrato().getQtdContratada()).compareTo(BigDecimal.ZERO) > 0  ) {
 							usinaContrato.persist();
 			    		
 			    	}else {
