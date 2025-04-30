@@ -31,6 +31,11 @@ public class UnidadeContrato extends PanacheEntityBase{
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUsina", nullable = false)
+    @JsonBackReference("unidadeContato-usina")
+    private Usina usina;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idUnidadeConsumidora", nullable = false)
     //@JsonBackReference("usinaContato-usina")
     private UnidadeConsumidora unidadeConsumidora;
 
@@ -59,6 +64,30 @@ public class UnidadeContrato extends PanacheEntityBase{
 
 	public void setContrato(Contrato contrato) {
 		this.contrato = contrato;
+	}
+
+	public UnidadeConsumidora getUnidadeConsumidora() {
+		return unidadeConsumidora;
+	}
+
+	public void setUnidadeConsumidora(UnidadeConsumidora unidadeConsumidora) {
+		this.unidadeConsumidora = unidadeConsumidora;
+	}
+
+	public BigDecimal getPercentual() {
+		return percentual;
+	}
+
+	public void setPercentual(BigDecimal percentual) {
+		this.percentual = percentual;
+	}
+
+	public Usina getUsina() {
+		return usina;
+	}
+
+	public void setUsina(Usina usina) {
+		this.usina = usina;
 	}
 
     

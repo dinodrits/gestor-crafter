@@ -17,10 +17,12 @@ import repository.ContratoRepository;
 import repository.UsinaRepository;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.List;
 
 
 import org.dino.model.Contrato;
+import org.dino.model.UnidadeContrato;
 import org.dino.model.Usina;
 import org.dino.model.UsinaContrato;
 import org.dino.resource.request.CadastroContratoRequest;
@@ -86,6 +88,7 @@ public class ContratoResource {
 	        	Resposta resposta = new Resposta("Já existe contrato na data inserida.", 400);
 	            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
 	        }
+	        requestContrato.getContrato().setArquivo(Base64.getDecoder().decode(requestContrato.getArquivoBase64().split(",")[1]));
 	        requestContrato.getContrato().setCliente(requestContrato.getCliente());
 	        requestContrato.getContrato().persist();
     	}else {
@@ -99,31 +102,39 @@ public class ContratoResource {
     		entity.setQtdIsencao(requestContrato.getContrato().getQtdIsencao());
     		
     	}
-        for (UsinaContrato usinaContrato : requestContrato.getUsinas()) {
-        	Usina usina = usinasRepository.getUsinasConsumo(usinaContrato);
-        	usinaContrato.setContrato(requestContrato.getContrato());
-        	System.out.println(objectMapper.writeValueAsString(usinaContrato));
-        	if(requestContrato.isVerificaDisponibilidade()) {
-        		if(usinaContrato.getId() == null) {
-		        	if(usina == null || usina.getDisponivel().subtract(requestContrato.getContrato().getQtdContratada()).compareTo(BigDecimal.ZERO) > 0  ) {
-							usinaContrato.persist();
-			    		
-			    	}else {
-			    		Resposta resposta = new Resposta("Não tem kw disponível para essa contratação na usina "+usina.getNome(), 400);
-			            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
-			    		
-			    	}
-        		}else {
-        			UsinaContrato entity = UsinaContrato.findById(usinaContrato.getId());
-        			entity.setCliente(usinaContrato.getCliente());
-        			entity.setContrato(usinaContrato.getContrato());
-        			entity.setQtdContratada(usinaContrato.getQtdContratada());
-        			entity.persist();
-        		}
-        	}else {
-        		usinaContrato.persist();
-        	}
-        }
+    	
+    	for(UnidadeContrato unidade : requestContrato.getUnidadesContratos()) {
+    		Usina usina = usinasRepository.getUsinasConsumo(unidade.getUsina().getId());
+    		
+    		
+    	}
+    	
+    	// verificar se ainda vai ser preciso varias usinas por contrato
+//        for (UsinaContrato usinaContrato : requestContrato.getUsinas()) {
+//        	Usina usina = usinasRepository.getUsinasConsumo(usinaContrato);
+//        	usinaContrato.setContrato(requestContrato.getContrato());
+//        	System.out.println(objectMapper.writeValueAsString(usinaContrato));
+//        	if(requestContrato.isVerificaDisponibilidade()) {
+//        		if(usinaContrato.getId() == null) {
+//		        	if(usina == null || usina.getDisponivel().subtract(requestContrato.getContrato().getQtdContratada()).compareTo(BigDecimal.ZERO) > 0  ) {
+//							usinaContrato.persist();
+//			    		
+//			    	}else {
+//			    		Resposta resposta = new Resposta("Não tem kw disponível para essa contratação na usina "+usina.getNome(), 400);
+//			            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+//			    		
+//			    	}
+//        		}else {
+//        			UsinaContrato entity = UsinaContrato.findById(usinaContrato.getId());
+//        			entity.setCliente(usinaContrato.getCliente());
+//        			entity.setContrato(usinaContrato.getContrato());
+//        			entity.setQtdContratada(usinaContrato.getQtdContratada());
+//        			entity.persist();
+//        		}
+//        	}else {
+//        		usinaContrato.persist();
+//        	}
+//        }
     	
         //return Response.created(URI.create("/contrato/" + contrato.getId())).build();
         return Response.status(Response.Status.OK).entity(requestContrato).build();

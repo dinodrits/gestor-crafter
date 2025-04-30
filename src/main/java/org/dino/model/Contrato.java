@@ -39,9 +39,11 @@ public class Contrato extends PanacheEntityBase{
     private Cliente cliente;
     
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idDocumento", nullable = false)
-    private Documento documento;
+
+    
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] arquivo;
     
 //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
 //    @JoinColumn(name = "idUsina", nullable = false)
@@ -69,6 +71,10 @@ public class Contrato extends PanacheEntityBase{
     
     @Column(name = "modalidadeFaturamento")
     private String modalidadeFaturamento;
+    
+    
+
+    
     
 
 
@@ -148,13 +154,6 @@ public class Contrato extends PanacheEntityBase{
 		this.usinas = usinas;
 	}
 
-	public Documento getDocumento() {
-		return documento;
-	}
-
-	public void setDocumento(Documento documento) {
-		this.documento = documento;
-	}
 
 	public String getModalidadeFaturamento() {
 		return modalidadeFaturamento;
@@ -179,7 +178,16 @@ public class Contrato extends PanacheEntityBase{
 	public void setValorIsencao(BigDecimal valorIsencao) {
 		this.valorIsencao = valorIsencao;
 	}
-	
+
+	public byte[] getArquivo() {
+		return arquivo;
+	}
+
+	public void setArquivo(byte[] arquivo) {
+		this.arquivo = arquivo;
+	}
+
+
 	
 	
 	

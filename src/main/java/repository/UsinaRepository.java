@@ -40,7 +40,7 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 	}
 
 	
-	public Usina getUsinasConsumo(UsinaContrato contrato){
+	public Usina getUsinasConsumo(Integer id){
 		
 		Object[] result;
 		try {
@@ -49,7 +49,7 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 					+ "	LEFT JOIN UsinasContratos uc ON u.idUsina = uc.idUsina "
 					+ "	LEFT JOIN Contratos c ON uc.idContrato = c.idContrato "
 					+ "	WHERE ((c.dtInicio < NOW() AND c.dtFim > NOW() ) OR (c.dtInicio IS NULL AND c.dtFim IS NULL)) and uc.idUsina = :idUsina  "
-					+ "GROUP BY u.idUsina,u.nome, u.potencialProducao,u.cpfCnpj, u.potencia").setParameter("idUsina", contrato.getUsina().getId()).getSingleResult();
+					+ "GROUP BY u.idUsina,u.nome, u.potencialProducao,u.cpfCnpj, u.potencia").setParameter("idUsina", id).getSingleResult();
 			Usina u = new Usina(
 					Integer.parseInt( result[0].toString().trim()),  // id
 					(String) result[1].toString().trim(),  // nome

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dino.model.Cliente;
 import org.dino.model.Contrato;
+import org.dino.model.UnidadeContrato;
 import org.dino.model.UsinaContrato;
 
 /**
@@ -15,6 +16,8 @@ public class CadastroContratoRequest {
 	Contrato contrato;
 	Cliente cliente;
 	List<UsinaContrato> usinas;
+	List<UnidadeContrato> unidadesContratos;
+	String arquivoBase64;
 	
 	public boolean isVerificaDisponibilidade() {
 		return verificaDisponibilidade;
@@ -40,6 +43,19 @@ public class CadastroContratoRequest {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
+	public List<UnidadeContrato> getUnidadesContratos() {
+		return unidadesContratos;
+	}
+	public void setUnidadesContratos(List<UnidadeContrato> unidadesContratos) {
+		this.unidadesContratos = unidadesContratos;
+	}
+	public String getArquivoBase64() {
+		return arquivoBase64;
+	}
+	public void setArquivoBase64(String arquivoBase64) {
+		this.arquivoBase64 = arquivoBase64;
+	}
+	
 	
 	
 	
