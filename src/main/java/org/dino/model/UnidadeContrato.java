@@ -31,7 +31,7 @@ public class UnidadeContrato extends PanacheEntityBase{
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUsina", nullable = false)
-    @JsonBackReference("unidadeContato-usina")
+    //@JsonBackReference("unidadeContato-usina")
     private Usina usina;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

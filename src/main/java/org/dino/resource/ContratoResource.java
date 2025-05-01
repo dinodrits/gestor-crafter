@@ -77,6 +77,8 @@ public class ContratoResource {
     	System.out.println(objectMapper.writeValueAsString(requestContrato));
     	//System.out.println(contrato.getUsina().getId());
     	
+    	Contrato contratoPersistent = null;
+    	
     	if(requestContrato.getContrato().getId() == null || requestContrato.getContrato().getId() == 0) {
 	    	boolean existeSobreposicao = Contrato.find(
 	                "((dtInicio <= ?1 AND dtFim >= ?1) " + // Verifica se a data de início do novo contrato está dentro de um contrato existente
@@ -91,6 +93,7 @@ public class ContratoResource {
 	        requestContrato.getContrato().setArquivo(Base64.getDecoder().decode(requestContrato.getArquivoBase64().split(",")[1]));
 	        requestContrato.getContrato().setCliente(requestContrato.getCliente());
 	        requestContrato.getContrato().persist();
+	        contratoPersistent = requestContrato.getContrato();
     	}else {
     		Contrato entity = Contrato.findById(requestContrato.getContrato().getId());
     		entity.setDiaLeitura(requestContrato.getContrato().getDiaLeitura());
@@ -100,16 +103,45 @@ public class ContratoResource {
     		entity.setPrazo(requestContrato.getContrato().getPrazo());
     		entity.setQtdContratada(requestContrato.getContrato().getQtdContratada());
     		entity.setQtdIsencao(requestContrato.getContrato().getQtdIsencao());
+    		contratoPersistent = entity;
     		
     	}
     	
     	for(UnidadeContrato unidade : requestContrato.getUnidadesContratos()) {
     		Usina usina = usinasRepository.getUsinasConsumo(unidade.getUsina().getId());
     		
+    		unidade.setContrato(contratoPersistent);
+    		if(requestContrato.isVerificaDisponibilidade()) {
+    			if(unidade.getId() == null) {
+					if(usina == null || usina.getDisponivel().subtract(unidade.getPercentual()).compareTo(BigDecimal.ZERO) > 0  ) {
+						unidade.persist();
+		    		
+			    	}else {
+			    		Resposta resposta = new Resposta("Não tem kw disponível para essa contratação na usina "+usina.getNome(), 400);
+			            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+			    		
+			    	}
+    			}else {
+    				UnidadeContrato entity = UnidadeContrato.findById(unidade.getId());
+        			entity.setPercentual(unidade.getPercentual());
+        			entity.setUsina(unidade.getUsina());
+        			entity.persist();
+        		}
+    		}else {
+    			if(unidade.getId() == null) {
+    				unidade.persist();
+    			}else {
+    				UnidadeContrato entity = UnidadeContrato.findById(unidade.getId());
+    				entity.setPercentual(unidade.getPercentual());
+        			entity.setUsina(unidade.getUsina());
+        			entity.persist();
+    			}
+    		}
+    		
     		
     	}
     	
-    	// verificar se ainda vai ser preciso varias usinas por contrato
+//    	// verificar se ainda vai ser preciso varias usinas por contrato
 //        for (UsinaContrato usinaContrato : requestContrato.getUsinas()) {
 //        	Usina usina = usinasRepository.getUsinasConsumo(usinaContrato);
 //        	usinaContrato.setContrato(requestContrato.getContrato());
@@ -169,6 +201,7 @@ public class ContratoResource {
         if(entity == null) {
             throw new NotFoundException();
         }
+        entity.getUnidadesContratos().clear();
         entity.delete();
     }
 

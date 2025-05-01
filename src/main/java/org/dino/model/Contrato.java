@@ -52,7 +52,7 @@ public class Contrato extends PanacheEntityBase{
     
     @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
    // @JsonBackReference("contrato-usina-contrato")
-    private List<UsinaContrato> usinas;
+    private List<UnidadeContrato> unidadesContratos;
 
     @Column(name = "qtdContratada", precision = 10, scale = 4)
     private BigDecimal qtdContratada;
@@ -72,11 +72,6 @@ public class Contrato extends PanacheEntityBase{
     @Column(name = "modalidadeFaturamento")
     private String modalidadeFaturamento;
     
-    
-
-    
-    
-
 
     public Integer getId() {
         return id;
@@ -146,14 +141,13 @@ public class Contrato extends PanacheEntityBase{
 		this.diaLeitura = diaLeitura;
 	}
 
-	public List<UsinaContrato> getUsinas() {
-		return usinas;
+	public List<UnidadeContrato> getUnidadesContratos() {
+		return unidadesContratos;
 	}
 
-	public void setUsinas(List<UsinaContrato> usinas) {
-		this.usinas = usinas;
+	public void setUnidadesContratos(List<UnidadeContrato> unidadesContratos) {
+		this.unidadesContratos = unidadesContratos;
 	}
-
 
 	public String getModalidadeFaturamento() {
 		return modalidadeFaturamento;

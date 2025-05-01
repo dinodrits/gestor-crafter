@@ -84,7 +84,6 @@ public class UnidadeConsumidoraResource {
         entity.setDescricao(person.getDescricao());
         entity.setCodigoCliente(person.getCodigoCliente());
         entity.setNumeroUC(person.getNumeroUC());
-        entity.setPercentual(person.getPercentual());
         entity.persist();
         System.out.println(entity.getId());
         

@@ -34,9 +34,6 @@ public class UnidadeConsumidora  extends PanacheEntityBase{
     @Column(name = "descricao", length = 150)
     private String descricao;
     
-    @Column(name = "percentual", precision = 10, scale = 4)
-    private BigDecimal percentual;
-
    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCliente", nullable = false)
@@ -83,14 +80,6 @@ public class UnidadeConsumidora  extends PanacheEntityBase{
 	}
 
 
-	public BigDecimal getPercentual() {
-		return percentual;
-	}
-
-
-	public void setPercentual(BigDecimal percentual) {
-		this.percentual = percentual;
-	}
 
 
 	public String getDescricao() {
