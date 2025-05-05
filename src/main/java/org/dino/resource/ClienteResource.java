@@ -12,16 +12,22 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import repository.ConsumoRepository;
+import repository.ContratoRepository;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.dino.model.Cliente;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.model.UnidadeConsumidora;
+import org.dino.model.UnidadeContrato;
+import org.dino.resource.request.UnidadeContratoPercentagemResponse;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.panache.common.Parameters;
@@ -36,6 +42,12 @@ public class ClienteResource {
 	
 	@Inject
     ObjectMapper objectMapper;
+	
+	@Inject
+	ContratoRepository contratoRepository;
+	
+	@Inject
+	ConsumoRepository consumoRepository;
 
 	@GET
     public List<Cliente> list() {
@@ -60,9 +72,43 @@ public class ClienteResource {
 	
 	@GET
 	@Path("unidadesConsumidoras/{id}")
-	public List<Consumo> getUnidadesConsumidoras(Long id) {
+	public List<UnidadeConsumidora> getUnidadesConsumidoras(Long id) {
 		return  UnidadeConsumidora.find("cliente.id = :id",
 				Parameters.with("id", id)).list();
+		
+	}
+	
+	@GET
+	@Path("unidadesConsumidorasPercentual/{id}/{ano}/{mes}")
+	public List<UnidadeContratoPercentagemResponse> getUnidadesConsumidorasPercentual(Long id,int ano, int mes) {
+		
+		List<UnidadeContratoPercentagemResponse> retorno = new ArrayList<UnidadeContratoPercentagemResponse>();
+		Contrato c =  contratoRepository.getContratoVigente(id,mes,ano);
+		
+		Map<String, Object> params2 = new HashMap<>();
+    	params2.put("idContrato", c.getId());
+    	params2.put("id", id);
+    	
+    	
+		
+    	 List<UnidadeContrato> unidades = UnidadeContrato.find("cliente.id = :id and contrato.id = :idContrato",
+				params2).list();
+    	 
+    	 for (UnidadeContrato unidadeContrato : unidades) {
+    		 UnidadeContratoPercentagemResponse adicionar = new UnidadeContratoPercentagemResponse();
+    		 int mesAnterior  = mes - 1;
+    		 int anoAnterior = ano - 0;
+    		 if(mesAnterior < 1) {
+    			 mesAnterior = 12;
+    			 anoAnterior = anoAnterior -1;
+    		 }
+    		 int saldo = consumoRepository.getSaldoUnidadeMes(id, mesAnterior, anoAnterior);
+    		 adicionar.setUnidadeContrato(unidadeContrato);
+    		 adicionar.setSaldoAnterior(saldo);
+    		 retorno.add(adicionar);
+		}
+    	 
+    	 return retorno;
 		
 	}
 	

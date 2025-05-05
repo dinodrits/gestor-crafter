@@ -4,13 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.dino.model.Consumo;
-
+import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.model.Usina;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -51,6 +52,26 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 //		return null;
 //	}
 //	
+	
+	public int getSaldoUnidadeMes(Long id, int mes, int ano) {
+		
+		Map<String, Object> params2 = new HashMap<>();
+    	params2.put("id", id);
+    	params2.put("mes", mes);
+    	params2.put("ano", ano);
+		
+    	try {
+    		UnidadeConsumidoraConsumo consumo =  UnidadeConsumidoraConsumo.find("unidadeConsumidora.id = :id and mes =:mes and ano = :ano",
+				params2).singleResult();
+    		return consumo.getSaldo();
+    	}catch (Exception e) {
+			return 0;
+		}
+    	
+		
+		
+	}
+	
 	
 	public List<Consumo> completarConsumosAno(List<Consumo> consumosExistentes, int ano) {
 	    List<Consumo> consumosCompletos = new ArrayList<>();

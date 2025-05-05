@@ -42,6 +42,9 @@ public class Consumo extends PanacheEntityBase{
     @Column(name = "consumido", precision = 10, scale = 2)
     private BigDecimal consumido;
     
+    @Column(name = "faturado", precision = 10, scale = 2)
+    private BigDecimal faturado;
+    
     @Column(name = "acumuladoMes", precision = 10, scale = 2)
     private BigDecimal acumuladoMes;
 
@@ -50,6 +53,9 @@ public class Consumo extends PanacheEntityBase{
     
     @Column(name = "desconto", precision = 10, scale = 4)
     private BigDecimal desconto;
+    
+    @Column(name = "saldoAnterior", precision = 10, scale = 4)
+    private BigDecimal saldoAnterior;
 
     @Column(name = "vencimento")
     private LocalDate vencimento;
@@ -206,6 +212,24 @@ public class Consumo extends PanacheEntityBase{
 	public void setValorKw(BigDecimal valorKw) {
 		this.valorKw = valorKw;
 	}
+
+	public BigDecimal getFaturado() {
+		return faturado;
+	}
+
+	public void setFaturado(BigDecimal faturado) {
+		this.faturado = faturado;
+	}
+
+	public BigDecimal getSaldoAnterior() {
+		return saldoAnterior;
+	}
+
+	public void setSaldoAnterior(BigDecimal saldoAnterior) {
+		this.saldoAnterior = saldoAnterior;
+	}
+	
+	
 
     
 }
