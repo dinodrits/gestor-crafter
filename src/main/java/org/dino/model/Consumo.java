@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.hibernate.envers.Audited;
 
@@ -25,6 +26,10 @@ public class Consumo extends PanacheEntityBase{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCliente", nullable = false)
     private Cliente cliente;
+    
+    @OneToMany(mappedBy = "consumo", cascade = CascadeType.ALL, orphanRemoval = true)
+   // @JsonBackReference("contrato-usina-contrato")
+    private List<UnidadeConsumidoraConsumo> unidadesConsumos;
 
  
     @Column(name = "valorTotal", precision = 10, scale = 2)
@@ -72,10 +77,7 @@ public class Consumo extends PanacheEntityBase{
     @Column(name = "ano")
     private Integer ano;
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idUsina", nullable = false)
-    //@JsonBackReference("usinaContato-usina")
-    private Usina usina;
+
 
     public Integer getId() {
         return id;
@@ -85,13 +87,7 @@ public class Consumo extends PanacheEntityBase{
         this.id = id;
     }
 
-    public Usina getUsina() {
-		return usina;
-	}
 
-	public void setUsina(Usina usina) {
-		this.usina = usina;
-	}
 
 	public Contrato getContrato() {
 		return contrato;
@@ -227,6 +223,14 @@ public class Consumo extends PanacheEntityBase{
 
 	public void setSaldoAnterior(BigDecimal saldoAnterior) {
 		this.saldoAnterior = saldoAnterior;
+	}
+
+	public List<UnidadeConsumidoraConsumo> getUnidadesConsumos() {
+		return unidadesConsumos;
+	}
+
+	public void setUnidadesConsumos(List<UnidadeConsumidoraConsumo> unidadesConsumos) {
+		this.unidadesConsumos = unidadesConsumos;
 	}
 	
 	

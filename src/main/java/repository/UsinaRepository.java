@@ -2,10 +2,13 @@ package repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.dino.model.Contrato;
+import org.dino.model.Geracao;
 import org.dino.model.Usina;
 import org.dino.model.UsinaContrato;
 
@@ -116,6 +119,23 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 			return BigDecimal.ZERO;
 		}
 		
+	}
+	
+	public int getQtdGerado(Integer id, int mes, int ano) {
+		
+		Map<String, Object> params2 = new HashMap<>();
+    	params2.put("mes", mes);
+    	params2.put("ano", ano);
+    	params2.put("id", id);
+    	
+    	try {
+    		Geracao g = Geracao.find("usina.id = :id and mes = :mes and ano = : ano", params2).singleResult();
+    		return g.getQtdGerada().intValue();
+    	}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return 0;
 	}
 	
 }

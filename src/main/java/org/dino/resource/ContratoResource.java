@@ -90,7 +90,13 @@ public class ContratoResource {
 	        	Resposta resposta = new Resposta("Já existe contrato na data inserida.", 400);
 	            return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
 	        }
-	        requestContrato.getContrato().setArquivo(Base64.getDecoder().decode(requestContrato.getArquivoBase64().split(",")[1]));
+	        if(requestContrato.getContrato().getArquivo() != null) {
+	        	try {
+	        		requestContrato.getContrato().setArquivo(Base64.getDecoder().decode(requestContrato.getArquivoBase64().split(",")[1]));
+	        	}catch (Exception e) {
+					// TODO: handle exception
+				}
+	        }
 	        requestContrato.getContrato().setCliente(requestContrato.getCliente());
 	        requestContrato.getContrato().persist();
 	        contratoPersistent = requestContrato.getContrato();

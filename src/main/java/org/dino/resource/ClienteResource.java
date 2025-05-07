@@ -14,7 +14,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import repository.ConsumoRepository;
 import repository.ContratoRepository;
+import repository.UsinaRepository;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +51,9 @@ public class ClienteResource {
 	
 	@Inject
 	ConsumoRepository consumoRepository;
+
+	@Inject
+	UsinaRepository usinaRepository;
 
 	@GET
     public List<Cliente> list() {
@@ -103,7 +109,9 @@ public class ClienteResource {
     			 anoAnterior = anoAnterior -1;
     		 }
     		 int saldo = consumoRepository.getSaldoUnidadeMes(id, mesAnterior, anoAnterior);
+    		 int gerado = usinaRepository.getQtdGerado(unidadeContrato.getUsina().getId(), mesAnterior, anoAnterior);
     		 adicionar.setUnidadeContrato(unidadeContrato);
+    		 adicionar.setInjetado(unidadeContrato.getPercentual().divide(new BigDecimal(100)).multiply(new BigDecimal(gerado)).intValue());
     		 adicionar.setSaldoAnterior(saldo);
     		 retorno.add(adicionar);
 		}
@@ -148,11 +156,18 @@ public class ClienteResource {
 
     @POST
     @Transactional
-    public Cliente create(Cliente cliente) throws JsonProcessingException {
+    public Response create(Cliente cliente) throws JsonProcessingException {
     	System.out.println(objectMapper.writeValueAsString(cliente));
+    	if (Cliente.find("cpfCnpj", cliente.getCpfCnpj()).count() > 0) {
+            return Response.status(Response.Status.CONFLICT)
+                   .entity("CPF/CNPJ já cadastrado").build();
+        }
     	cliente.setToken(UUID.randomUUID().toString().replaceAll("-", ""));
     	cliente.persistAndFlush();
-        return cliente;
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(cliente)
+                .build();
     }
 
     @PUT

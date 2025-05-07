@@ -11,6 +11,7 @@ public class UnidadeContratoPercentagemResponse {
     
 	private UnidadeContrato unidadeContrato;
 	private int saldoAnterior;
+	private int injetado;
 	
 	
 	public UnidadeContrato getUnidadeContrato() {
@@ -24,6 +25,12 @@ public class UnidadeContratoPercentagemResponse {
 	}
 	public void setSaldoAnterior(int saldoAnterior) {
 		this.saldoAnterior = saldoAnterior;
+	}
+	public int getInjetado() {
+		return injetado;
+	}
+	public void setInjetado(int injetado) {
+		this.injetado = injetado;
 	} 
 	
 	

@@ -61,9 +61,11 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
     	params2.put("ano", ano);
 		
     	try {
-    		UnidadeConsumidoraConsumo consumo =  UnidadeConsumidoraConsumo.find("unidadeConsumidora.id = :id and mes =:mes and ano = :ano",
-				params2).singleResult();
-    		return consumo.getSaldo();
+    		Consumo c = Consumo.find(" cliente.id = :id and mes = :mes and ano = :ano ", params2).singleResult();
+    		Map<String, Object> param = new HashMap<>();
+    		param.put("id", c.getId());
+    		UnidadeConsumidoraConsumo unidadeConsumo =    UnidadeConsumidoraConsumo.find(" consumo.id = :id ", param).singleResult();
+    		return unidadeConsumo.getSaldo();
     	}catch (Exception e) {
 			return 0;
 		}

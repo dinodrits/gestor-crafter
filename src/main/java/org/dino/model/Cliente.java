@@ -32,7 +32,7 @@ public class Cliente  extends PanacheEntityBase{
 
 
     
-    @Column(name = "cpfCnpj", length = 18)
+    @Column(name = "cpfCnpj", length = 18, unique = true)
     private String cpfCnpj;
     
     @Column(name = "email", length = 50)
