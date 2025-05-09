@@ -34,6 +34,12 @@ public class UnidadeContrato extends PanacheEntityBase{
     //@JsonBackReference("unidadeContato-usina")
     private Usina usina;
     
+    @Column(name = "diaVencimento")
+    private Integer diaVencimento;
+    
+    @Column(name = "diaLeitura")
+    private String diaLeitura;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUnidadeConsumidora", nullable = false)
     //@JsonBackReference("usinaContato-usina")
@@ -88,6 +94,24 @@ public class UnidadeContrato extends PanacheEntityBase{
 
 	public void setUsina(Usina usina) {
 		this.usina = usina;
+	}
+
+
+
+	public Integer getDiaVencimento() {
+		return diaVencimento;
+	}
+
+	public void setDiaVencimento(Integer diaVencimento) {
+		this.diaVencimento = diaVencimento;
+	}
+
+	public String getDiaLeitura() {
+		return diaLeitura;
+	}
+
+	public void setDiaLeitura(String diaLeitura) {
+		this.diaLeitura = diaLeitura;
 	}
 
     

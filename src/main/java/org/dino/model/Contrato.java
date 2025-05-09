@@ -63,11 +63,6 @@ public class Contrato extends PanacheEntityBase{
     @Column(name = "valorIsencao", precision = 10, scale = 4)
     private BigDecimal valorIsencao;
 
-    @Column(name = "diaVencimento")
-    private Integer diaVencimento;
-    
-    @Column(name = "diaLeitura")
-    private String diaLeitura;
     
     @Column(name = "modalidadeFaturamento")
     private String modalidadeFaturamento;
@@ -114,15 +109,6 @@ public class Contrato extends PanacheEntityBase{
 		this.cliente = cliente;
 	}
 
-	
-
-    public Integer getDiaVencimento() {
-        return diaVencimento;
-    }
-
-    public void setDiaVencimento(Integer diaVencimento) {
-        this.diaVencimento = diaVencimento;
-    }
 
 	public Integer getQtdIsencao() {
 		return qtdIsencao;
@@ -133,13 +119,7 @@ public class Contrato extends PanacheEntityBase{
 	}
 
 	
-	public String getDiaLeitura() {
-		return diaLeitura;
-	}
 
-	public void setDiaLeitura(String diaLeitura) {
-		this.diaLeitura = diaLeitura;
-	}
 
 	public List<UnidadeContrato> getUnidadesContratos() {
 		return unidadesContratos;

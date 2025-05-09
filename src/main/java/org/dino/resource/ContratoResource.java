@@ -71,6 +71,11 @@ public class ContratoResource {
         
     }
 
+    /**
+     * @param requestContrato
+     * @return
+     * @throws Exception
+     */
     @POST
     @Transactional
     public Response create(CadastroContratoRequest requestContrato) throws Exception {
@@ -102,8 +107,6 @@ public class ContratoResource {
 	        contratoPersistent = requestContrato.getContrato();
     	}else {
     		Contrato entity = Contrato.findById(requestContrato.getContrato().getId());
-    		entity.setDiaLeitura(requestContrato.getContrato().getDiaLeitura());
-    		entity.setDiaVencimento(requestContrato.getContrato().getDiaVencimento());
     		entity.setDtFim(requestContrato.getContrato().getDtFim());
     		entity.setDtInicio(requestContrato.getContrato().getDtInicio());
     		entity.setPrazo(requestContrato.getContrato().getPrazo());
@@ -131,6 +134,8 @@ public class ContratoResource {
     				UnidadeContrato entity = UnidadeContrato.findById(unidade.getId());
         			entity.setPercentual(unidade.getPercentual());
         			entity.setUsina(unidade.getUsina());
+        			entity.setDiaLeitura(unidade.getDiaLeitura());
+        			entity.setDiaVencimento(unidade.getDiaVencimento());
         			entity.persist();
         		}
     		}else {
@@ -188,7 +193,7 @@ public class ContratoResource {
         }
         
         entity.setDtFim(person.getDtFim());
-        entity.setDiaVencimento(person.getDiaVencimento());
+       
         entity.setDtInicio(person.getDtInicio());
         entity.setCliente(person.getCliente());
         entity.setPrazo(person.getPrazo());
