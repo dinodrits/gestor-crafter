@@ -20,9 +20,9 @@ import jakarta.persistence.NoResultException;
 public class UsinaRepository implements PanacheRepository<Usina>{
 
 	public List<Usina> getUsinasConsumo(){
-		List<Object[]> resultList = getEntityManager().createNativeQuery("SELECT u.idUsina idUsina,u.nome nome, u.potencialProducao potencialProducao, u.cpfCnpj cpfCnpj, u.potencia potencia,u.potencialProducao - COALESCE(SUM(uc.qtdContratada), 0) disponivel "
+		List<Object[]> resultList = getEntityManager().createNativeQuery("SELECT u.idUsina idUsina,u.nome nome, u.potencialProducao potencialProducao, u.cpfCnpj cpfCnpj, u.potencia potencia,100 - COALESCE(SUM(uc.percentual), 0) disponivel "
 				+ "FROM Usinas u "
-				+ "	LEFT JOIN UsinasContratos uc ON u.idUsina = uc.idUsina "
+				+ "	LEFT JOIN UnidadesContratos uc ON u.idUsina = uc.idUsina "
 				+ "	LEFT JOIN Contratos c ON uc.idContrato = c.idContrato "
 				+ "	WHERE (c.dtInicio < NOW() AND c.dtFim > NOW() ) OR (c.dtInicio IS NULL AND c.dtFim IS NULL) "
 				+ "GROUP BY u.idUsina,u.nome, u.potencialProducao, u.cpfCnpj, u.potencia").getResultList();

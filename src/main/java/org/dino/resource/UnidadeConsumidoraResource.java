@@ -80,12 +80,12 @@ public class UnidadeConsumidoraResource {
         if(entity == null) {
             throw new NotFoundException();
         }
-        
+        entity.setCliente(person.getCliente());
         entity.setDescricao(person.getDescricao());
         entity.setCodigoCliente(person.getCodigoCliente());
         entity.setNumeroUC(person.getNumeroUC());
         entity.persist();
-        System.out.println(entity.getId());
+        
         
         return entity;
     }
