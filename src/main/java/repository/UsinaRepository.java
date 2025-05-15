@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.model.Geracao;
+import org.dino.model.UnidadeConsumidoraConsumo;
+import org.dino.model.UnidadeContrato;
 import org.dino.model.Usina;
 import org.dino.model.UsinaContrato;
 
@@ -69,6 +72,20 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 		}
 		
 		return null;
+		
+	}
+	
+	
+	public BigDecimal getDisponibilidade(Integer id){
+		BigDecimal result;
+		try {
+			result = (BigDecimal) getEntityManager().createNativeQuery("SELECT 100 - COALESCE(SUM(uc.percentual), 0) disponivel FROM  UnidadesContratos uc LEFT JOIN Contratos c ON uc.idContrato = c.idContrato WHERE  uc.idUsina = :id and c.dtInicio < NOW() AND c.dtFim > NOW()").setParameter("id", id).getSingleResult();
+			
+			return result;
+		} catch (NoResultException e) {
+			// TODO Auto-generated catch block
+			return BigDecimal.ZERO;
+		}
 		
 	}
 	
@@ -136,6 +153,13 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 		}
 		
 		return 0;
+	}
+	
+	
+	public List<UnidadeContrato> getContratosVigentes(Long id) {
+		// TODO Auto-generated method stub
+		List<UnidadeContrato> c = getEntityManager().createNativeQuery("SELECT uc.* FROM  UnidadesContratos  uc LEFT JOIN Contratos c ON uc.idContrato = c.idContrato WHERE  uc.idUsina = :id and c.dtInicio < NOW() AND c.dtFim > NOW()", UnidadeContrato.class).setParameter("id", id).getResultList();
+		return c;
 	}
 	
 }

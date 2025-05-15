@@ -9,6 +9,8 @@ import java.util.Map;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.model.Geracao;
+import org.dino.model.UnidadeConsumidoraConsumo;
+import org.dino.model.UnidadeContrato;
 import org.dino.model.Usina;
 import org.dino.resource.request.Resposta;
 
@@ -51,10 +53,24 @@ public class UsinaResource {
 	@GET
 	@Path("/disponibilidade")
 	public List<Usina> getUsinasUtilizacao(){
+		List<Usina> usinas =  Usina.listAll();
+		for (Usina usina : usinas) {
+			usina.setDisponivel(usinasRepository.getDisponibilidade(usina.getId()));		
+		}
+		return usinas;
+	}
+	
+	
+	@GET
+	@Path("/getContratosVigentes/{id}")
+	public List<UnidadeContrato> getContratosVigentes(Long id){
+		
+//		List<UnidadeConsumidoraConsumo> usinas =  UnidadeConsumidoraConsumo.find("usina.id = :id and dtInicio < NOW() and dtFim > NOW()",
+//		         Parameters.with("id", id)).list();
 		
 		
-		return usinasRepository.getUsinasConsumo();
 		
+		return usinasRepository.getContratosVigentes(id);
 	}
 	
 	@GET
