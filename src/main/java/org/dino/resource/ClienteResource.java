@@ -108,7 +108,7 @@ public class ClienteResource {
     			 mesAnterior = 12;
     			 anoAnterior = anoAnterior -1;
     		 }
-    		 int saldo = consumoRepository.getSaldoUnidadeMes(id, mesAnterior, anoAnterior);
+    		 int saldo = consumoRepository.getSaldoUnidadeMes(id, unidadeContrato.getUnidadeConsumidora().getId(),mesAnterior, anoAnterior);
     		 int gerado = usinaRepository.getQtdGerado(unidadeContrato.getUsina().getId(), mesAnterior, anoAnterior);
     		 adicionar.setUnidadeContrato(unidadeContrato);
     		 adicionar.setInjetado(unidadeContrato.getPercentual().divide(new BigDecimal(100)).multiply(new BigDecimal(gerado)).intValue());

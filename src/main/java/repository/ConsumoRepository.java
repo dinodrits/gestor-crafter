@@ -53,7 +53,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 //	}
 //	
 	
-	public int getSaldoUnidadeMes(Long id, int mes, int ano) {
+	public int getSaldoUnidadeMes(Long id,Integer idUnidade, int mes, int ano) {
 		
 		Map<String, Object> params2 = new HashMap<>();
     	params2.put("id", id);
@@ -64,7 +64,8 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
     		Consumo c = Consumo.find(" cliente.id = :id and mes = :mes and ano = :ano ", params2).singleResult();
     		Map<String, Object> param = new HashMap<>();
     		param.put("id", c.getId());
-    		UnidadeConsumidoraConsumo unidadeConsumo =    UnidadeConsumidoraConsumo.find(" consumo.id = :id ", param).singleResult();
+    		param.put("idUnidade", idUnidade);
+    		UnidadeConsumidoraConsumo unidadeConsumo =    UnidadeConsumidoraConsumo.find(" consumo.id = :id and unidadeConsumidora.id = :idUnidade", param).singleResult();
     		return unidadeConsumo.getSaldo();
     	}catch (Exception e) {
 			return 0;
