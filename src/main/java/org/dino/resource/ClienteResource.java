@@ -113,6 +113,7 @@ public class ClienteResource {
     		 adicionar.setUnidadeContrato(unidadeContrato);
     		 adicionar.setInjetado(unidadeContrato.getPercentual().divide(new BigDecimal(100)).multiply(new BigDecimal(gerado)).intValue());
     		 adicionar.setSaldoAnterior(saldo);
+    		 adicionar.setPercentual(unidadeContrato.getPercentual());
     		 retorno.add(adicionar);
 		}
     	 

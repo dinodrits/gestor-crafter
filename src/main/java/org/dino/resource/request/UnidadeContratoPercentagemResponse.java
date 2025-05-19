@@ -2,6 +2,9 @@ package org.dino.resource.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 
 import org.dino.model.UnidadeContrato;
@@ -12,6 +15,7 @@ public class UnidadeContratoPercentagemResponse {
 	private UnidadeContrato unidadeContrato;
 	private int saldoAnterior;
 	private int injetado;
+	private BigDecimal percentual;
 	
 	
 	public UnidadeContrato getUnidadeContrato() {
@@ -31,6 +35,12 @@ public class UnidadeContratoPercentagemResponse {
 	}
 	public void setInjetado(int injetado) {
 		this.injetado = injetado;
+	}
+	public BigDecimal getPercentual() {
+		return percentual;
+	}
+	public void setPercentual(BigDecimal percentual) {
+		this.percentual = percentual;
 	} 
 	
 	

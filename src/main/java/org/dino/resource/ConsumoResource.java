@@ -183,6 +183,7 @@ public class ConsumoResource {
     			consumoEntity.setInjetado(unidadeConsumidoraConsumo.getInjetado());
     			consumoEntity.setSaldo(unidadeConsumidoraConsumo.getSaldo());
     			consumoEntity.setSaldoAnterior(unidadeConsumidoraConsumo.getSaldoAnterior());
+    			consumoEntity.setPercentual(unidadeConsumidoraConsumo.getPercentual());
     			consumoEntity.persist();
     		}
     		
@@ -208,11 +209,21 @@ public class ConsumoResource {
         if(entity == null) {
             throw new NotFoundException();
         }
-        Cliente cliente = Cliente.findById(entity.getCliente().getId());
-        cliente.setSaldoAcumulado((cliente.getSaldoAcumulado() != null ? cliente.getSaldoAcumulado() : 0)   - ( entity.getCompensado().intValue() - entity.getConsumido().intValue() ));
         entity.delete();
     }
     
+    
+    @DELETE
+    @Path("consumoUnidade/{id}")
+    @Transactional
+    public void deleteConsumoUnidade(Long id) {
+    	UnidadeConsumidoraConsumo entity = UnidadeConsumidoraConsumo.findById(id);
+        if(entity == null) {
+            throw new NotFoundException();
+        }
+       
+        entity.delete();
+    }
     
     @GET
     @Path("/consumos/{id}/{ano}")
@@ -227,5 +238,16 @@ public class ConsumoResource {
     	
         
     }
+    
+    @POST
+    @Transactional
+    @Path("/importConsumo")
+    public void importConsumo(Consumo consumo) throws JsonProcessingException {
+    	
+    	
+    }
+    
+    
+    
 
 }

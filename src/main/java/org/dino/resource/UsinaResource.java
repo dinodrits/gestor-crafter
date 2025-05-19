@@ -115,10 +115,14 @@ public class UsinaResource {
     	params.put("mes", mes);
     	params.put("ano", ano);
     	params.put("id",id);
-    	Geracao g = Geracao.find("usina.id = :id and mes = :mes and ano = :ano",
-    			params).singleResult();
-		
-		return g.getQtdGerada();
+    	try {
+	    	Geracao g = Geracao.find("usina.id = :id and mes = :mes and ano = :ano",
+	    			params).singleResult();
+			
+			return g.getQtdGerada();
+    	}catch (Exception e) {
+			return BigDecimal.ZERO;
+		}
         
     }
 	
