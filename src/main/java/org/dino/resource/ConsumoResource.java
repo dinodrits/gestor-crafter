@@ -234,7 +234,7 @@ public class ConsumoResource {
     	params.put("ano", ano);
     	params.put("id", id);
     	
-    	return consumoRepository.completarConsumosAno( Consumo.find("cliente.id = :id and ano=:ano",params).list(),ano);
+    	return consumoRepository.completarConsumosAno( Consumo.find("cliente.id = :id and ano=:ano order by ano, mes",params).list(),ano);
     	
         
     }
