@@ -56,6 +56,9 @@ public class Contrato extends PanacheEntityBase{
 
     @Column(name = "qtdContratada", precision = 10, scale = 4)
     private BigDecimal qtdContratada;
+    
+    @Column(name = "totalContrato", precision = 10, scale = 4)
+    private BigDecimal totalContrato;
 
     @Column(name = "qtdIsencao")
     private Integer qtdIsencao;
@@ -159,6 +162,14 @@ public class Contrato extends PanacheEntityBase{
 
 	public void setArquivo(byte[] arquivo) {
 		this.arquivo = arquivo;
+	}
+
+	public BigDecimal getTotalContrato() {
+		return totalContrato;
+	}
+
+	public void setTotalContrato(BigDecimal totalContrato) {
+		this.totalContrato = totalContrato;
 	}
 
 

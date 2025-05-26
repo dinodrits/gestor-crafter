@@ -28,6 +28,8 @@ public class Geracao extends PanacheEntityBase{
 
     @Column(name = "qtdGerada", precision = 10, scale = 4)
     private BigDecimal qtdGerada;
+    
+    
 
     public Integer getId() {
         return id;

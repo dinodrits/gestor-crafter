@@ -1,9 +1,14 @@
 package repository;
 
 import java.math.BigDecimal;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -14,6 +19,7 @@ import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.model.UnidadeContrato;
 import org.dino.model.Usina;
 import org.dino.model.UsinaContrato;
+import org.dino.resource.request.ChartDataResponse;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -119,7 +125,7 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 	public BigDecimal getMediaInjetada(Long id) {
 		// TODO Auto-generated method stub
 		try {
-			return (BigDecimal) getEntityManager().createNativeQuery("SELECT AVG(injetado) FROM Consumos WHERE idUsina = :id GROUP BY mes , ano").setParameter("id", id).getSingleResult();
+			return (BigDecimal) getEntityManager().createNativeQuery("SELECT AVG(ucc.injetado) FROM UnidadesConsumidorasConsumo ucc inner join Consumos c on c.idConsumo = ucc.idConsumo WHERE idUsina = :id ").setParameter("id", id).getSingleResult();
 		} catch (NoResultException e) {
 			// TODO Auto-generated catch block
 			return BigDecimal.ZERO;
@@ -130,7 +136,7 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 	public BigDecimal getTotalContratos(Long id) {
 		// TODO Auto-generated method stub
 		try {
-			return (BigDecimal) getEntityManager().createNativeQuery("SELECT SUM(uc.qtdContratada) FROM Contratos c INNER join UsinasContratos uc ON c.idContrato = uc.idContrato  WHERE uc.idUsina = :id AND NOW() BETWEEN c.dtInicio AND c.dtFim").setParameter("id", id).getSingleResult();
+			return (BigDecimal) getEntityManager().createNativeQuery("SELECT SUM(uc.percentual) FROM Contratos c INNER join UnidadesContratos uc ON c.idContrato = uc.idContrato  WHERE uc.idUsina = :id AND NOW() BETWEEN c.dtInicio AND c.dtFim").setParameter("id", id).getSingleResult();
 		} catch (NoResultException e) {
 			// TODO Auto-generated catch block
 			return BigDecimal.ZERO;
@@ -160,6 +166,40 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 		// TODO Auto-generated method stub
 		List<UnidadeContrato> c = getEntityManager().createNativeQuery("SELECT uc.* FROM  UnidadesContratos  uc LEFT JOIN Contratos c ON uc.idContrato = c.idContrato WHERE  uc.idUsina = :id and c.dtInicio < NOW() AND c.dtFim > NOW()", UnidadeContrato.class).setParameter("id", id).getResultList();
 		return c;
+	}
+	
+	
+	public ChartDataResponse getUltimasProducoes(){
+		
+		YearMonth current = YearMonth.now();
+	    YearMonth startDate = current.minusMonths(11);
+	    
+	    Map<String, Integer> monthlyData = new LinkedHashMap<>();
+	    Locale localeBR = new Locale("pt", "BR");
+	    
+	    
+	    for (int i = 0; i < 12; i++) {
+	        YearMonth month = startDate.plusMonths(i);
+	        String monthName = month.getMonth().getDisplayName(TextStyle.SHORT, localeBR);
+	        monthlyData.put(monthName, 0); // Inicializa com 0
+	    }
+	    
+	    
+		List<Object[]> results  = getEntityManager().createNativeQuery("SELECT sum(g.qtdGerada),g.mes,g.ano from  Geracoes g GROUP BY g.mes,g.ano   ORDER BY g.ano desc ,g.mes DESC ").getResultList();
+		
+		results.forEach(row -> {
+	        int total = ((Number) row[0]).intValue();
+	        int monthNumber = ((Number) row[1]).intValue();
+	        
+	        // Converter número para nome do mês
+	        String monthName = Month.of(monthNumber).getDisplayName(TextStyle.SHORT, localeBR);
+	        monthlyData.put(monthName, total);
+	    });
+
+		List<String> labels = new ArrayList<>(monthlyData.keySet());
+	    List<Integer> qtdGerada = new ArrayList<>(monthlyData.values());
+	    
+		return new ChartDataResponse(labels, qtdGerada);
 	}
 	
 }

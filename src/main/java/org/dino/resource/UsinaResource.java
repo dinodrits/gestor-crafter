@@ -12,6 +12,7 @@ import org.dino.model.Geracao;
 import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.model.UnidadeContrato;
 import org.dino.model.Usina;
+import org.dino.resource.request.ChartDataResponse;
 import org.dino.resource.request.Resposta;
 
 import io.quarkus.panache.common.Parameters;
@@ -104,6 +105,13 @@ public class UsinaResource {
 	@Path("totalContrato/{id}")
 	public BigDecimal getTotalContrato(Long id) {
 		return  usinasRepository.getTotalContratos(id);
+		
+	}
+	
+	@GET
+	@Path("utltimasProducoes")
+	public ChartDataResponse getUltimasProducoes() {
+		return  usinasRepository.getUltimasProducoes();
 		
 	}
 	

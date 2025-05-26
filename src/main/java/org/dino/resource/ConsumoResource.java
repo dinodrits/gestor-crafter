@@ -12,6 +12,7 @@ import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.resource.request.CadastroConsumoRequest;
+import org.dino.resource.request.ConsumoRelatorioResponse;
 import org.dino.resource.request.Resposta;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -85,8 +86,8 @@ public class ConsumoResource {
     
     @GET
     @Path("/fatura/{mes}/{ano}/{token}")
-    public List<Consumo> getFatura(int mes,int ano,String token) {
-    	List<Consumo> c = consumoRepository.getFatura(mes,ano,token);
+    public List<ConsumoRelatorioResponse> getFatura(int mes,int ano,String token) {
+    	List<ConsumoRelatorioResponse> c = consumoRepository.getFatura(mes,ano,token);
     	
         return c;
     }
@@ -226,17 +227,17 @@ public class ConsumoResource {
     }
     
     @GET
-    @Path("/consumos/{id}/{ano}")
-    public List<Consumo> getRelatorioCliente(Long id,int ano) {
+    @Path("/consumos/{id}/{ano}/{idUnidade}")
+    public List<ConsumoRelatorioResponse> getRelatorioCliente(Long id,int ano,Long idUnidade) {
     	
     	Map<String, Object> params = new HashMap<>();
     	
     	params.put("ano", ano);
     	params.put("id", id);
+    	params.put("idUnidade", idUnidade);
     	
-    	return consumoRepository.completarConsumosAno( Consumo.find("cliente.id = :id and ano=:ano order by ano, mes",params).list(),ano);
+    	return consumoRepository.completarConsumosAno( UnidadeConsumidoraConsumo.find("SELECT ucc FROM UnidadeConsumidoraConsumo ucc JOIN FETCH ucc.consumo c WHERE ucc.cliente.id = :id AND c.ano = :ano and ucc.unidadeConsumidora.id = :idUnidade ORDER BY c.ano, c.mes",params).list(),ano);
     	
-        
     }
     
     @POST
