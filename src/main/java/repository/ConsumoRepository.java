@@ -158,8 +158,12 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	    	
 	    	params.put("ano", ano);
 	    	params.put("mes", mes);
-	    	
-	    	 MonitoramentoKw mk = MonitoramentoKw.find("ano = :ano and mes = :mes",params).singleResult();
+	    	MonitoramentoKw mk = new MonitoramentoKw();
+	    	try {
+	    		mk = MonitoramentoKw.find("ano = :ano and mes = :mes",params).singleResult();
+	    	}catch (Exception e) {
+				// TODO: handle exception
+			}
 	    	 
 	    	 
 	        if (consumoPorMes.containsKey(mes)) {
@@ -200,6 +204,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	            // Se não existe, cria um novo consumo zerado
 	        	ConsumoRelatorioResponse consumoZerado = new ConsumoRelatorioResponse();
 	        	consumoZerado.setConsumo(new Consumo());
+	        	consumoZerado.getConsumo().setMes(mes);
 //	            consumoZerado.getConsumo().setMes(mes);
 //	            consumoZerado.getConsumo().setAno(ano);
 //	            consumoZerado.getConsumo().setValorKw(BigDecimal.ZERO);
