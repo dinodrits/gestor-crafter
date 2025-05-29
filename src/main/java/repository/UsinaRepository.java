@@ -174,21 +174,21 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 		YearMonth current = YearMonth.now();
 	    YearMonth startDate = current.minusMonths(11);
 	    
-	    Map<String, Integer> monthlyData = new LinkedHashMap<>();
+	    Map<String, BigDecimal> monthlyData = new LinkedHashMap<>();
 	    Locale localeBR = new Locale("pt", "BR");
 	    
 	    
 	    for (int i = 0; i < 12; i++) {
 	        YearMonth month = startDate.plusMonths(i);
 	        String monthName = month.getMonth().getDisplayName(TextStyle.SHORT, localeBR);
-	        monthlyData.put(monthName, 0); // Inicializa com 0
+	        monthlyData.put(monthName, BigDecimal.ZERO); // Inicializa com 0
 	    }
 	    
 	    
 		List<Object[]> results  = getEntityManager().createNativeQuery("SELECT sum(g.qtdGerada),g.mes,g.ano from  Geracoes g GROUP BY g.mes,g.ano   ORDER BY g.ano desc ,g.mes DESC ").getResultList();
 		
 		results.forEach(row -> {
-	        int total = ((Number) row[0]).intValue();
+			BigDecimal total = ((BigDecimal) row[0]);
 	        int monthNumber = ((Number) row[1]).intValue();
 	        
 	        // Converter número para nome do mês
@@ -197,7 +197,7 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 	    });
 
 		List<String> labels = new ArrayList<>(monthlyData.keySet());
-	    List<Integer> qtdGerada = new ArrayList<>(monthlyData.values());
+	    List<BigDecimal> qtdGerada = new ArrayList<>(monthlyData.values());
 	    
 		return new ChartDataResponse(labels, qtdGerada);
 	}

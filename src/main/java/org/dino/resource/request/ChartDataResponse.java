@@ -1,13 +1,14 @@
 package org.dino.resource.request;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ChartDataResponse {
 	private List<String> labels;
-    private List<Integer> data;
+    private List<BigDecimal> data;
     
     // Construtor
-    public ChartDataResponse(List<String> labels, List<Integer> data) {
+    public ChartDataResponse(List<String> labels, List<BigDecimal> data) {
         this.labels = labels;
         this.data = data;
     }
@@ -20,11 +21,11 @@ public class ChartDataResponse {
 		this.labels = labels;
 	}
 
-	public List<Integer> getData() {
+	public List<BigDecimal> getData() {
 		return data;
 	}
 
-	public void setData(List<Integer> data) {
+	public void setData(List<BigDecimal> data) {
 		this.data = data;
 	}
     
