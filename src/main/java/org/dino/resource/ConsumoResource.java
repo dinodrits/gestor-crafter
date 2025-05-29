@@ -12,6 +12,7 @@ import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.resource.request.CadastroConsumoRequest;
+import org.dino.resource.request.ChartDataResponse;
 import org.dino.resource.request.ConsumoRelatorioResponse;
 import org.dino.resource.request.Resposta;
 
@@ -77,6 +78,13 @@ public class ConsumoResource {
 			return null;
 		}
     }
+    
+    @GET
+	@Path("ultimosConsumos")
+	public ChartDataResponse getUltimosConsumos() {
+		return  consumoRepository.getUltimasProducoes();
+		
+	}
     
     @GET
     @Path("/valorMedio/{id}")
