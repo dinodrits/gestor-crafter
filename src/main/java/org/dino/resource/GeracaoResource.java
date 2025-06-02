@@ -1,10 +1,13 @@
 package org.dino.resource;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dino.model.Geracao;
+import org.dino.resource.request.ChartDataResponse;
 import org.dino.resource.request.Resposta;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -98,6 +101,29 @@ public class GeracaoResource {
             throw new NotFoundException();
         }
         entity.delete();
+    }
+    
+    
+    
+    @GET
+    @Path("/getGraficoGeracoes/{mes}/{ano}")
+    public ChartDataResponse getGeracoesDashboard(Integer mes,Integer ano) {
+    	
+    	
+    	Map<String, Object> params = new HashMap<>();
+    	params.put("mes", mes);
+    	params.put("ano", ano);
+        List<Geracao> geracoes =   Geracao.find(" ano = :ano and mes = :mes",params).list();
+        
+        List<String> labels = new ArrayList<>();
+	    List<BigDecimal> qtdGerada = new ArrayList<>();
+        
+        for (Geracao geracao : geracoes) {
+        	labels.add(geracao.getUsina().getNome());
+        	qtdGerada.add(geracao.getQtdGerada());
+		}
+        
+        return new ChartDataResponse(labels, qtdGerada);
     }
 
 }

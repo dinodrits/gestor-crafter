@@ -257,6 +257,36 @@ public class ConsumoResource {
     }
     
     
+    @GET
+    @Path("/maioresConsumidores/{mes}/{ano}")
+    public List<Consumo> getMaioresConsumidores(int mes,int ano) {
+        //return consumoRepository.getValorMedioConsumokw(id);
+    	
+Map<String, Object> params = new HashMap<>();
+    	
+    	params.put("ano", ano);
+    	params.put("mes", mes);
+    	
+    	
+    	return Consumo.find(" ano = :ano AND mes = :mes ORDER BY compensado DESC LIMIT 5",params).list();
+    	
+    	
+    }
+    
+    
+    @GET
+    @Path("/totalConsumo/{mes}/{ano}")
+    public Integer getTotalConsumo(int mes,int ano) {
+        //return consumoRepository.getValorMedioConsumokw(id);
+    	
+    	
+    	
+    	return consumoRepository.getTotalConsumoMes(mes, ano);
+    	
+    	
+    }
+    
+    
     
 
 }
