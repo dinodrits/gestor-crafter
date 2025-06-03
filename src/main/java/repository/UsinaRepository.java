@@ -185,7 +185,9 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 	    }
 	    
 	    
-		List<Object[]> results  = getEntityManager().createNativeQuery("SELECT sum(g.qtdGerada),g.mes,g.ano from  Geracoes g GROUP BY g.mes,g.ano   ORDER BY g.ano desc ,g.mes DESC ").getResultList();
+		List<Object[]> results  = getEntityManager().createNativeQuery("SELECT sum(g.qtdGerada),g.mes,g.ano from  Geracoes g GROUP BY g.mes,g.ano   ORDER BY g.ano desc ,g.mes DESC LIMIT 12").getResultList();
+		List<String> labels = new ArrayList<>();
+		List<BigDecimal> qtdGerada = new ArrayList<>();
 		
 		results.forEach(row -> {
 			BigDecimal total = ((BigDecimal) row[0]);
@@ -193,11 +195,11 @@ public class UsinaRepository implements PanacheRepository<Usina>{
 	        
 	        // Converter número para nome do mês
 	        String monthName = Month.of(monthNumber).getDisplayName(TextStyle.SHORT, localeBR);
-	        monthlyData.put(monthName, total);
+	        System.out.println(monthName + " "+ monthNumber);
+	        labels.addFirst(monthName);
+	        qtdGerada.addFirst(total);
 	    });
 
-		List<String> labels = new ArrayList<>(monthlyData.keySet());
-	    List<BigDecimal> qtdGerada = new ArrayList<>(monthlyData.values());
 	    
 		return new ChartDataResponse(labels, qtdGerada);
 	}

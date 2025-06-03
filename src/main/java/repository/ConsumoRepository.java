@@ -18,6 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.dino.model.Consumo;
+import org.dino.model.Contrato;
 import org.dino.model.Geracao;
 import org.dino.model.MonitoramentoKw;
 import org.dino.model.UnidadeConsumidoraConsumo;
@@ -41,7 +42,15 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	
 	public BigDecimal getValorMedioConsumokw(Long id) {
 		Object result;
-		result =  getEntityManager().createNativeQuery("SELECT AVG(valorkw) FROM Consumos WHERE idCliente = :idCliente").setParameter("idCliente", id).getSingleResult();
+		Map<String, Object> parans = new HashMap<>();
+    	
+		parans.put("idCliente", id);
+		Contrato c =  Contrato.find("cliente.id =:idCliente and now() BETWEEN dtInicio and dtFim ", parans).singleResult();
+		if(c.getModalidadeFaturamento().equals("PV")) {
+			result =  getEntityManager().createNativeQuery("SELECT avg(kw.tarifaBandeira - (kw.tarifaBandeira*c.desconto)) from Consumos c INNER JOIN MonitoramentoKw kw ON c.mes = kw.mes AND c.ano = kw.ano WHERE idCliente = :idCliente ORDER BY kw.ano DESC, kw.mes DESC").setParameter("idCliente", id).getSingleResult();
+		}else {
+			result =  getEntityManager().createNativeQuery("SELECT AVG( c.compensado / co.totalContrato ) from Consumos c INNER JOIN  Contratos co ON c.idContrato = co.idContrato WHERE c.idCliente = :idCliente").setParameter("idCliente", id).getSingleResult();
+		}
 		return (BigDecimal)result;
 	}
 

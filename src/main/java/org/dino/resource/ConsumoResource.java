@@ -10,6 +10,7 @@ import org.dino.model.Cliente;
 import org.dino.model.Configuracao;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
+import org.dino.model.MonitoramentoKw;
 import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.resource.request.CadastroConsumoRequest;
 import org.dino.resource.request.ChartDataResponse;
@@ -71,12 +72,18 @@ public class ConsumoResource {
     @GET
     @Path("/consumoAtual/{id}")
     public Consumo getConsumoAtual(Long id) {
-    	try {
-        return Consumo.find("cliente.id = :id and mes = month(now()) and ano = year(now())",
+    	
+        Consumo c = Consumo.find("Select c from Consumo c where cliente.id = :id order by c.ano desc, c.mes desc limit 1",
 		         Parameters.with("id", id)).singleResult();
-    	}catch (Exception e) {
-			return null;
-		}
+        Map<String, Object> params = new HashMap<>();
+    	params.put("mes",c.getMes());
+    	params.put("ano", c.getAno());
+    	
+        MonitoramentoKw kw =  MonitoramentoKw.find(" ano = :ano and mes = :mes ", params).singleResult();
+        c.setValorUnitarioCeb(kw.getTarifaBandeira());
+        return c;
+    	
+    	
     }
     
     @GET
