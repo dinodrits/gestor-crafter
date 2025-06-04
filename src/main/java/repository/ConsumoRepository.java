@@ -264,17 +264,21 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	    
 		List<Object[]> results  = getEntityManager().createNativeQuery("SELECT sum(g.consumido),g.mes,g.ano from  Consumos g GROUP BY g.mes,g.ano   ORDER BY g.ano desc ,g.mes DESC LIMIT 12").getResultList();
 		
+		List<String> labels = new ArrayList<>();
+	    List<BigDecimal> qtdGerada = new ArrayList<>();
+		
 		results.forEach(row -> {
 			BigDecimal total = ((BigDecimal) row[0]);
 	        int monthNumber = ((Number) row[1]).intValue();
 	        
 	        // Converter número para nome do mês
 	        String monthName = Month.of(monthNumber).getDisplayName(TextStyle.SHORT, localeBR);
-	        monthlyData.put(monthName, total);
+	        labels.addFirst(monthName);
+	        qtdGerada.addFirst(total);
+	        
 	    });
 
-		List<String> labels = new ArrayList<>(monthlyData.keySet());
-	    List<BigDecimal> qtdGerada = new ArrayList<>(monthlyData.values());
+		
 	    
 		return new ChartDataResponse(labels, qtdGerada);
 	}

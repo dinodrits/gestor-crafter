@@ -46,17 +46,20 @@ public ChartDataResponse getUltimosMonitoramentos(){
 	    
 		List<Object[]> results  = getEntityManager().createNativeQuery("SELECT mk.tarifaBandeira,mk.mes,mk.ano FROM MonitoramentoKw mk ORDER BY mk.ano DESC, mk.mes DESC LIMIT 12").getResultList();
 		
+		List<String> labels = new ArrayList<>();
+	    List<BigDecimal> qtdGerada = new ArrayList<>();
+		
 		results.forEach(row -> {
 	        BigDecimal total = ((BigDecimal) row[0]);
 	        int monthNumber = ((Number) row[1]).intValue();
 	        
 	        // Converter número para nome do mês
 	        String monthName = Month.of(monthNumber).getDisplayName(TextStyle.SHORT, localeBR);
-	        monthlyData.put(monthName, total);
+	        labels.addFirst(monthName);
+	        qtdGerada.addFirst(total);
 	    });
 
-		List<String> labels = new ArrayList<>(monthlyData.keySet());
-	    List<BigDecimal> qtdGerada = new ArrayList<>(monthlyData.values());
+		
 	    
 		return new ChartDataResponse(labels, qtdGerada);
 	}
