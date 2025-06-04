@@ -33,7 +33,7 @@ public class MonitoramentoKw extends PanacheEntityBase{
 	 private BigDecimal icms;
 	 
 	 @Column(name = "confins", precision = 10, scale = 4)
-	 private BigDecimal confins;
+	 private BigDecimal cofins;
 	 
 	 @Column(name = "pis", precision = 10, scale = 4)
 	 private BigDecimal pis;
@@ -79,12 +79,14 @@ public class MonitoramentoKw extends PanacheEntityBase{
 		this.icms = icms;
 	}
 
-	public BigDecimal getConfins() {
-		return confins;
+
+
+	public BigDecimal getCofins() {
+		return cofins;
 	}
 
-	public void setConfins(BigDecimal confins) {
-		this.confins = confins;
+	public void setCofins(BigDecimal cofins) {
+		this.cofins = cofins;
 	}
 
 	public BigDecimal getPis() {

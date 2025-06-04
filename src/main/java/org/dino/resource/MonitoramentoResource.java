@@ -81,16 +81,15 @@ public class MonitoramentoResource {
             throw new NotFoundException();
         }
         
-//        entity.setNome(person.getNome());
-//        entity.setCidade(person.getCidade());
-//        entity.setCapacidadeProducao(person.getCapacidadeProducao());
-//        entity.setDataCriacao(person.getDataCriacao());
-//        entity.setPotencia(person.getPotencia());
-//        entity.setContato(person.getContato());
-//        entity.setCpfCnpj(person.getCpfCnpj());
-//        entity.setEmail(person.getEmail());
-//        entity.setEndereco(person.getEndereco());
-//        entity.setUf(person.getUf());
+        entity.setAno(person.getAno());
+        entity.setCofins(person.getCofins());
+        entity.setIcms(person.getIcms());
+        entity.setMes(person.getMes());
+        entity.setPis(person.getPis());
+        entity.setTarifa(person.getTarifa());
+        entity.setTarifaBandeira(person.getTarifaBandeira());
+        entity.setTarifaCompleta(person.getTarifaCompleta());
+
         
         entity.persist();
         System.out.println(entity.getId());

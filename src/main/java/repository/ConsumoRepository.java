@@ -287,9 +287,13 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	public Integer getTotalConsumoMes(int mes,int ano ){
 		
 		
-		Object[] results  = (Object[]) getEntityManager().createNativeQuery("SELECT sum(g.compensado),g.mes,g.ano from  Consumos g  where g.mes = :mes and g.ano = :ano LIMIT 12").setParameter("ano", ano).setParameter("mes", mes).getSingleResult();
+		Object[] results  = (Object[]) getEntityManager().createNativeQuery("SELECT sum(g.compensado),g.mes,g.ano from  Consumos g  where g.mes = :mes and g.ano = :ano ").setParameter("ano", ano).setParameter("mes", mes).getSingleResult();
 		
-		return ((BigDecimal) results[0]).intValue();
+		if(results[0] != null) {
+			return ((BigDecimal) results[0]).intValue();
+		}
+		return 0;
+		
 	}
 	
 }
