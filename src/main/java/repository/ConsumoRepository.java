@@ -91,7 +91,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 			add.setSaldo(u.getSaldo());
 			add.setUnidadeConsumidora(u.getUnidadeConsumidora());
 			add.setUsina(u.getUsina());
-			add.setValorKwCeb(mk.getTarifaBandeira());
+			add.setValorKwCeb(u.getConsumo().getValorUnitarioCeb());
 			add.setTotalContratado(u.getPercentual().multiply( u.getUsina().getCapacidadeProducao().divide(BigDecimal.valueOf(12),4, RoundingMode.HALF_EVEN) ).intValue() / 100);
 			if(u.getConsumo().getContrato().getModalidadeFaturamento().equals("PF")) {
 				add.setValorContratado(u.getConsumo().getContrato().getTotalContrato());
@@ -103,7 +103,8 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
         			add.setValorKw(BigDecimal.ZERO);
         		}
         	}else {
-        		add.setValorKw(mk.getTarifaBandeira().subtract( mk.getTarifaBandeira().multiply(u.getConsumo().getDesconto())));
+        		//add.setValorKw(mk.getTarifaBandeira().subtract( mk.getTarifaBandeira().multiply(u.getConsumo().getDesconto())));
+        		add.setValorKw(u.getConsumo().getValorKw());
 	        	add.setValorTotal(add.getValorKw().multiply( BigDecimal.valueOf( add.getCompensado()) ));
         		add.setValorContratado(add.getValorTotal());
         	}
