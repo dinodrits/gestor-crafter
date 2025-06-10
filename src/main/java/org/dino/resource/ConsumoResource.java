@@ -242,16 +242,18 @@ public class ConsumoResource {
     }
     
     @GET
-    @Path("/consumos/{id}/{ano}/{idUnidade}")
-    public List<ConsumoRelatorioResponse> getRelatorioCliente(Long id,int ano,Long idUnidade) {
+    @Path("/consumos/{id}/{ano}/{idUnidade}/{mes}/{qtdMes}")
+    public List<ConsumoRelatorioResponse> getRelatorioCliente(Long id,int ano,Long idUnidade,int mes,int qtdMes) {
     	
     	Map<String, Object> params = new HashMap<>();
     	
     	params.put("ano", ano);
     	params.put("id", id);
     	params.put("idUnidade", idUnidade);
+    	params.put("mes", mes);
+    	params.put("qtd", qtdMes );
     	
-    	return consumoRepository.completarConsumosAno( UnidadeConsumidoraConsumo.find("SELECT ucc FROM UnidadeConsumidoraConsumo ucc JOIN FETCH ucc.consumo c WHERE ucc.cliente.id = :id AND c.ano = :ano and ucc.unidadeConsumidora.id = :idUnidade ORDER BY c.ano, c.mes",params).list(),ano);
+    	return consumoRepository.completarConsumosAno( UnidadeConsumidoraConsumo.find("SELECT ucc FROM UnidadeConsumidoraConsumo ucc JOIN FETCH ucc.consumo c WHERE ucc.cliente.id = :id AND (c.ano * 12 + c.mes) BETWEEN (:ano * 12 + :mes) AND (:ano * 12 + :mes + :qtd - 1) and ucc.unidadeConsumidora.id = :idUnidade ORDER BY c.ano, c.mes",params).list(),ano,qtdMes);
     	
     }
     

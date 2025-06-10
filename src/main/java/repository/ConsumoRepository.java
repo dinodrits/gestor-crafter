@@ -1,6 +1,9 @@
 package repository;
 
 import java.math.BigDecimal;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
@@ -30,9 +33,13 @@ import org.dino.resource.request.ConsumoRelatorioResponse;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ConsumoRepository implements PanacheRepository<Usina>{
+	
+	@Inject
+    ObjectMapper objectMapper;
 
 	public BigDecimal getMediaConsumo(Long id) {
 		Object result;
@@ -46,7 +53,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
     	
 		parans.put("idCliente", id);
 		Contrato c =  Contrato.find("cliente.id =:idCliente and now() BETWEEN dtInicio and dtFim ", parans).singleResult();
-		if(c.getModalidadeFaturamento().equals("PV")) {
+		if(c.getModalidadeFaturamento() != null && c.getModalidadeFaturamento().equals("PV")) {
 			result =  getEntityManager().createNativeQuery("SELECT avg(kw.tarifaBandeira - (kw.tarifaBandeira*c.desconto)) from Consumos c INNER JOIN MonitoramentoKw kw ON c.mes = kw.mes AND c.ano = kw.ano WHERE idCliente = :idCliente ORDER BY kw.ano DESC, kw.mes DESC").setParameter("idCliente", id).getSingleResult();
 		}else {
 			result =  getEntityManager().createNativeQuery("SELECT AVG( c.compensado / co.totalContrato ) from Consumos c INNER JOIN  Contratos co ON c.idContrato = co.idContrato WHERE c.idCliente = :idCliente").setParameter("idCliente", id).getSingleResult();
@@ -89,6 +96,14 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 			add.setMes(u.getConsumo().getMes());
 			add.setPercentual(u.getPercentual());
 			add.setSaldo(u.getSaldo());
+			try {
+				System.out.println(objectMapper.writeValueAsString(u));
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				System.out.println("erro pint");
+				e.printStackTrace();
+				
+			}
 			add.setUnidadeConsumidora(u.getUnidadeConsumidora());
 			add.setUsina(u.getUsina());
 			add.setValorKwCeb(u.getConsumo().getValorUnitarioCeb());
@@ -104,7 +119,10 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
         		}
         	}else {
         		//add.setValorKw(mk.getTarifaBandeira().subtract( mk.getTarifaBandeira().multiply(u.getConsumo().getDesconto())));
-        		add.setValorKw(u.getConsumo().getValorKw());
+        		BigDecimal desconto = u.getConsumo().getValorUnitarioCeb().multiply(u.getConsumo().getDesconto()).divide(new BigDecimal(100));
+        		System.out.println(u.getConsumo().getValorUnitarioCeb().subtract(desconto));
+        		add.setValorKw(u.getConsumo().getValorUnitarioCeb().subtract(desconto));
+
 	        	add.setValorTotal(add.getValorKw().multiply( BigDecimal.valueOf( add.getCompensado()) ));
         		add.setValorContratado(add.getValorTotal());
         	}
@@ -155,36 +173,34 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	}
 	
 	
-	public List<ConsumoRelatorioResponse> completarConsumosAno(List<UnidadeConsumidoraConsumo> consumosExistentes, int ano) {
+	public List<ConsumoRelatorioResponse> completarConsumosAno(List<UnidadeConsumidoraConsumo> consumosExistentes, int ano, int qtd) {
 	    List<ConsumoRelatorioResponse> consumosCompletos = new ArrayList<>();
 	    
 	    // Criar um mapa para facilitar a busca por mês
-	    Map<Integer, UnidadeConsumidoraConsumo> consumoPorMes = consumosExistentes.stream()
-	        .collect(Collectors.toMap(uc -> uc.getConsumo().getMes(), Function.identity()));
+//	    Map<Integer, UnidadeConsumidoraConsumo> consumoPorMes = consumosExistentes.stream()
+//	        .collect(Collectors.toMap(uc -> uc.getConsumo().getMes(), Function.identity()));
 	    
     	
 	    
 	   
-	    
-	    
-	    
-	    // Gerar todos os meses do ano (1 a 12)
-	    for (int mes = 1; mes <= 12; mes++) {
+	    for (UnidadeConsumidoraConsumo ucc : consumosExistentes) {
+	    	// Gerar todos os meses do ano (1 a 12)
+	    	//for (int mes = 1; mes <= qtd; mes++) {
 	    	Map<String, Object> params = new HashMap<>();
 	    	
-	    	params.put("ano", ano);
-	    	params.put("mes", mes);
-	    	MonitoramentoKw mk = new MonitoramentoKw();
-	    	try {
-	    		mk = MonitoramentoKw.find("ano = :ano and mes = :mes",params).singleResult();
-	    	}catch (Exception e) {
-				// TODO: handle exception
-			}
+//	    	params.put("ano", ano);
+//	    	params.put("mes", mes);
+//	    	MonitoramentoKw mk = new MonitoramentoKw();
+//	    	try {
+//	    		mk = MonitoramentoKw.find("ano = :ano and mes = :mes",params).singleResult();
+//	    	}catch (Exception e) {
+//				// TODO: handle exception
+//			}
 	    	 
 	    	 
-	        if (consumoPorMes.containsKey(mes)) {
+	        //if (consumoPorMes.containsKey(mes)) {
 	            // Se existe consumo para este mês, adiciona o existente
-	        	UnidadeConsumidoraConsumo ucc = consumoPorMes.get(mes);
+	        	//UnidadeConsumidoraConsumo ucc = consumoPorMes.get(mes);
 	        	ConsumoRelatorioResponse cr = new ConsumoRelatorioResponse();
 	        	cr.setConsumo(ucc.getConsumo());
 	        	
@@ -198,11 +214,17 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	        	cr.setInjetado(ucc.getInjetado().intValue());
 	        	cr.setPercentual(ucc.getPercentual());
 	        	cr.setSaldo(ucc.getSaldo());
-	        	cr.setValorKwCeb(mk.getTarifaBandeira());
+	        	cr.setValorKwCeb(ucc.getConsumo().getValorUnitarioCeb());
 	        	
-	        	cr.setValorKw(mk.getTarifaBandeira().subtract( mk.getTarifaBandeira().multiply(ucc.getConsumo().getDesconto())));
+	        	BigDecimal desconto = ucc.getConsumo().getValorUnitarioCeb().multiply(ucc.getConsumo().getDesconto()).divide(new BigDecimal(100));
+        		
+        		cr.setValorKw(ucc.getConsumo().getValorUnitarioCeb().subtract(desconto));
+	        	
+	        	//cr.setValorKw(mk.getTarifaBandeira().subtract( mk.getTarifaBandeira().multiply(ucc.getConsumo().getDesconto())));
+	        	
 	        	cr.setValorTotal(cr.getValorKw().multiply( BigDecimal.valueOf( cr.getCompensado()) ));
-	        	if(ucc.getConsumo().getContrato().getModalidadeFaturamento().equals("PF")) {
+	        	
+	        	if( ucc.getConsumo().getContrato().getModalidadeFaturamento() != null && ucc.getConsumo().getContrato().getModalidadeFaturamento().equals("PF") ) {
 	        		cr.setValorContratado(ucc.getConsumo().getContrato().getTotalContrato());
 	        		System.out.println(cr.getCompensado());
 	        		if(cr.getCompensado() > 0) {
@@ -211,38 +233,40 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	        			cr.setValorKw(BigDecimal.ZERO);
 	        		}
 	        	}else {
+	        		
+	        		
 	        		cr.setValorContratado(cr.getValorTotal());
 	        	}
 	        	
 	        	
 	            consumosCompletos.add(cr);
-	        } else {
-	            // Se não existe, cria um novo consumo zerado
-	        	ConsumoRelatorioResponse consumoZerado = new ConsumoRelatorioResponse();
-	        	consumoZerado.setConsumo(new Consumo());
-	        	consumoZerado.getConsumo().setMes(mes);
-//	            consumoZerado.getConsumo().setMes(mes);
-//	            consumoZerado.getConsumo().setAno(ano);
-//	            consumoZerado.getConsumo().setValorKw(BigDecimal.ZERO);
-//	            consumoZerado.getConsumo().setDesconto(BigDecimal.ZERO);
-//	            consumoZerado.getConsumo().setArvoresPlantadas(BigDecimal.ZERO);
-//	            consumoZerado.getConsumo().setCarbonoEvitado(BigDecimal.ZERO);
-	            consumoZerado.setInjetado(0);
-	            consumoZerado.setCompensado(0);
-	            consumoZerado.setConsumido(0);
-	           // consumoZerado.setAcumulado(BigDecimal.ZERO);
-	          //  consumoZerado.setValorUnitarioCeb(BigDecimal.ZERO);
-	           // consumoZerado.setDesconto(BigDecimal.ZERO);
-//	            consumoZerado.setVencimento(LocalDate.of(ano, mes, 1)); // ou outra data padrão
-//	            consumoZerado.setCarbonoEvitado(BigDecimal.ZERO);
-//	            consumoZerado.setArvoresPlantadas(BigDecimal.ZERO);
-	            
-	            consumosCompletos.add(consumoZerado);
-	        }
+//	        } else {
+//	            // Se não existe, cria um novo consumo zerado
+//	        	ConsumoRelatorioResponse consumoZerado = new ConsumoRelatorioResponse();
+//	        	consumoZerado.setConsumo(new Consumo());
+//	        	consumoZerado.getConsumo().setMes(mes);
+////	            consumoZerado.getConsumo().setMes(mes);
+////	            consumoZerado.getConsumo().setAno(ano);
+////	            consumoZerado.getConsumo().setValorKw(BigDecimal.ZERO);
+////	            consumoZerado.getConsumo().setDesconto(BigDecimal.ZERO);
+////	            consumoZerado.getConsumo().setArvoresPlantadas(BigDecimal.ZERO);
+////	            consumoZerado.getConsumo().setCarbonoEvitado(BigDecimal.ZERO);
+//	            consumoZerado.setInjetado(0);
+//	            consumoZerado.setCompensado(0);
+//	            consumoZerado.setConsumido(0);
+//	           // consumoZerado.setAcumulado(BigDecimal.ZERO);
+//	          //  consumoZerado.setValorUnitarioCeb(BigDecimal.ZERO);
+//	           // consumoZerado.setDesconto(BigDecimal.ZERO);
+////	            consumoZerado.setVencimento(LocalDate.of(ano, mes, 1)); // ou outra data padrão
+////	            consumoZerado.setCarbonoEvitado(BigDecimal.ZERO);
+////	            consumoZerado.setArvoresPlantadas(BigDecimal.ZERO);
+//	            
+//	            consumosCompletos.add(consumoZerado);
+//	        }
 	    }
 	    
 	    // Ordenar por mês
-	    consumosCompletos.sort(Comparator.comparingInt(uc -> uc.getConsumo().getMes()));
+	   // consumosCompletos.sort(Comparator.comparingInt(uc -> uc.getConsumo().getMes()));
 	    
 	    return consumosCompletos;
 	}
