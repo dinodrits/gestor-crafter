@@ -72,7 +72,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
     	
     	params.put("ano", ano);
     	params.put("mes", mes);
-		MonitoramentoKw mk = MonitoramentoKw.find("ano = :ano and mes = :mes",params).singleResult();
+		
 		
 		for (Iterator iterator = c.iterator(); iterator.hasNext();) {
 			UnidadeConsumidoraConsumo u = (UnidadeConsumidoraConsumo) iterator.next();
@@ -82,7 +82,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 			paramsGeracao.put("mes", mes);
 			paramsGeracao.put("idUsina", u.getUsina().getId());
 			
-			Geracao g = Geracao.find("ano = :ano and mes = :mes and usina.id = :idUsina", paramsGeracao).singleResult();
+		
 			
 			
 			
@@ -108,7 +108,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 			add.setUsina(u.getUsina());
 			add.setValorKwCeb(u.getConsumo().getValorUnitarioCeb());
 			add.setTotalContratado(u.getPercentual().multiply( u.getUsina().getCapacidadeProducao().divide(BigDecimal.valueOf(12),4, RoundingMode.HALF_EVEN) ).intValue() / 100);
-			if(u.getConsumo().getContrato().getModalidadeFaturamento().equals("PF")) {
+			if(u.getConsumo().getContrato().getModalidadeFaturamento() != null &&  u.getConsumo().getContrato().getModalidadeFaturamento().equals("PF")) {
 				add.setValorContratado(u.getConsumo().getContrato().getTotalContrato());
 				add.setValorTotal(u.getConsumo().getContrato().getTotalContrato());
         		
