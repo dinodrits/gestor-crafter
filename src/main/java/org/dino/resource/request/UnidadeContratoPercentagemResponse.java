@@ -16,6 +16,7 @@ public class UnidadeContratoPercentagemResponse {
 	private int saldoAnterior;
 	private int injetado;
 	private BigDecimal percentual;
+	private BigDecimal saldoDevedorAnterior;
 	
 	
 	public UnidadeContrato getUnidadeContrato() {
@@ -41,8 +42,14 @@ public class UnidadeContratoPercentagemResponse {
 	}
 	public void setPercentual(BigDecimal percentual) {
 		this.percentual = percentual;
-	} 
-	
+	}
+	public BigDecimal getSaldoDevedorAnterior() {
+		return saldoDevedorAnterior;
+	}
+	public void setSaldoDevedorAnterior(BigDecimal saldoDevedorAnterior) {
+		this.saldoDevedorAnterior = saldoDevedorAnterior;
+	}
+
 	
 	
 }

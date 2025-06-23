@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.dino.model.Cliente;
 import org.dino.model.Consumo;
 import org.dino.model.Contrato;
 import org.dino.model.Geracao;
@@ -173,6 +174,26 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	}
 	
 	
+public BigDecimal getSaldoDevedorMes(Long id,Integer idUnidade, int mes, int ano) {
+		
+		Map<String, Object> params2 = new HashMap<>();
+    	params2.put("id", id);
+    	params2.put("mes", mes);
+    	params2.put("ano", ano);
+		
+    	try {
+    		Consumo c = Consumo.find(" cliente.id = :id and mes = :mes and ano = :ano ", params2).singleResult();
+    		
+    		return c.getSaldoDevedor();
+    	}catch (Exception e) {
+			return BigDecimal.ZERO;
+		}
+    	
+		
+		
+	}
+	
+	
 	public List<ConsumoRelatorioResponse> completarConsumosAno(List<UnidadeConsumidoraConsumo> consumosExistentes, int ano, int qtd) {
 	    List<ConsumoRelatorioResponse> consumosCompletos = new ArrayList<>();
 	    
@@ -214,6 +235,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	        	cr.setInjetado(ucc.getInjetado().intValue());
 	        	cr.setPercentual(ucc.getPercentual());
 	        	cr.setSaldo(ucc.getSaldo());
+	        	cr.setCip(ucc.getCip());
 	        	cr.setValorKwCeb(ucc.getConsumo().getValorUnitarioCeb());
 	        	
 	        	BigDecimal desconto = ucc.getConsumo().getValorUnitarioCeb().multiply(ucc.getConsumo().getDesconto()).divide(new BigDecimal(100));
@@ -319,6 +341,28 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 		}
 		return 0;
 		
+	}
+
+	public int calculaFaturaMaxima(Contrato c) {
+		
+		Contrato contrato = Contrato.findById(c.getId());
+		
+		BigDecimal total = BigDecimal.ZERO;
+		
+		List<UnidadeContrato> list =  contrato.getUnidadesContratos();
+		
+		for (Iterator<UnidadeContrato> iterator = list.iterator(); iterator.hasNext();) {
+			
+			UnidadeContrato unidadeContrato = (UnidadeContrato) iterator.next();
+			
+			
+			
+			total = total.add( unidadeContrato.getUsina().getCapacidadeProducao().divide(new BigDecimal(12))
+			.multiply(unidadeContrato.getPercentual().divide(new BigDecimal(100))));
+			
+		}
+		total = total.multiply(new BigDecimal(1.3));
+		return total.intValue();
 	}
 	
 }

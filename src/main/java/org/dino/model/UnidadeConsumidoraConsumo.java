@@ -54,6 +54,9 @@ public class UnidadeConsumidoraConsumo extends PanacheEntityBase{
     @Column(name = "fatura", precision = 10, scale = 2)
     private BigDecimal fatura;
     
+    @Column(name = "cip", precision = 10, scale = 2)
+    private BigDecimal cip;
+    
     @Column(name = "saldoAnterior")
     private Integer saldoAnterior;
     
@@ -156,6 +159,14 @@ public class UnidadeConsumidoraConsumo extends PanacheEntityBase{
 
 	public void setSaldo(Integer saldo) {
 		this.saldo = saldo;
+	}
+
+	public BigDecimal getCip() {
+		return cip;
+	}
+
+	public void setCip(BigDecimal cip) {
+		this.cip = cip;
 	}
 
 	

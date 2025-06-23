@@ -77,9 +77,43 @@ public class Consumo extends PanacheEntityBase{
     @Column(name = "ano")
     private Integer ano;
     
+    @Column(name = "observacao")
+    private String observacao;
+    
+    @Column(name = "saldoDevedor", precision = 10, scale = 4, columnDefinition = "decimal(10,4) default 0.0000")
+    private BigDecimal saldoDevedor;
+    
+    @Column(name = "saldoDevedorAnterior", precision = 10, scale = 4, columnDefinition = "decimal(10,4) default 0.0000")
+    private BigDecimal saldoDevedorAnterior;
+    
+    @Column(name = "pago", columnDefinition = "boolean default false")
+    private Boolean pago;
 
+    public BigDecimal getSaldoDevedorAnterior() {
+		return saldoDevedorAnterior;
+	}
 
-    public Integer getId() {
+	public void setSaldoDevedorAnterior(BigDecimal saldoDevedorAnterior) {
+		this.saldoDevedorAnterior = saldoDevedorAnterior;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+	public BigDecimal getSaldoDevedor() {
+		return saldoDevedor;
+	}
+
+	public void setSaldoDevedor(BigDecimal saldoDevedor) {
+		this.saldoDevedor = saldoDevedor;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -231,6 +265,14 @@ public class Consumo extends PanacheEntityBase{
 
 	public void setUnidadesConsumos(List<UnidadeConsumidoraConsumo> unidadesConsumos) {
 		this.unidadesConsumos = unidadesConsumos;
+	}
+
+	public Boolean isPago() {
+		return pago;
+	}
+
+	public void setPago(Boolean pago) {
+		this.pago = pago;
 	}
 	
 	

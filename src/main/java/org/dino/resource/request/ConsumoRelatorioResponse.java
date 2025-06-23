@@ -24,9 +24,16 @@ public class ConsumoRelatorioResponse {
 	private BigDecimal valorKw;
 	private BigDecimal valorTotal;
 	private BigDecimal valorContratado;
+	private BigDecimal cip;
 	
 	
 	
+	public BigDecimal getCip() {
+		return cip;
+	}
+	public void setCip(BigDecimal cip) {
+		this.cip = cip;
+	}
 	public BigDecimal getValorKw() {
 		return valorKw;
 	}

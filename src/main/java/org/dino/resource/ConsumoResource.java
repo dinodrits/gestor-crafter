@@ -118,12 +118,35 @@ public class ConsumoResource {
     	params.put("id", request.getConsumo().getCliente().getId());
     	Long count = Consumo.count("mes = :mes and ano = :ano and cliente.id= :id ", params);
     	
+    	int mesAnterior  = request.getConsumo().getMes() - 1;
+		 int anoAnterior =  request.getConsumo().getAno() - 0;
+		 if(mesAnterior < 1) {
+			 mesAnterior = 12;
+			 anoAnterior = anoAnterior -1;
+		 }
+		 
+    	
     	if(count > 0) {
     		Resposta resposta = new Resposta("Já existe consumo registrado para o período selecionado", 400);
             return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
     	}
     	
     	BigDecimal descontoValor =  request.getConsumo().getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN).multiply(request.getConsumo().getDesconto().divide(BigDecimal.valueOf(100).setScale(4, RoundingMode.HALF_DOWN)));
+    	
+    	//buscar consumo anterior 
+		Map<String, Object> paramsAnterior = new HashMap<>();
+		paramsAnterior.put("mes", mesAnterior);
+		paramsAnterior.put("ano", anoAnterior);
+		paramsAnterior.put("id", request.getConsumo().getCliente().getId());
+	
+		Consumo consumoAnterior = Consumo.find("mes = :mes and ano = :ano and cliente.id= :id ", paramsAnterior).singleResult();
+    	
+    	int valorMaximo = consumoRepository.calculaFaturaMaxima(request.getConsumo().getContrato());
+    	int totalAFaturar = request.getConsumo().getInjetado().add(consumoAnterior.getSaldoDevedor()).intValue();
+    	
+    	if(totalAFaturar > valorMaximo ) {
+    		request.getConsumo().setSaldoDevedor(new BigDecimal( totalAFaturar - valorMaximo));
+    	}
     	
     	System.out.println(descontoValor);
     	System.out.println(request.getConsumo().getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));

@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -64,6 +65,10 @@ public class Usina extends PanacheEntityBase{
     
     @Transient
     private BigDecimal disponivel;
+    
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] imagem;
     
     @OneToMany(mappedBy = "usina", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference("contrato-cliente")
@@ -197,6 +202,14 @@ public class Usina extends PanacheEntityBase{
 
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+
+	public byte[] getImagem() {
+		return imagem;
+	}
+
+	public void setImagem(byte[] imagem) {
+		this.imagem = imagem;
 	}
     
     
