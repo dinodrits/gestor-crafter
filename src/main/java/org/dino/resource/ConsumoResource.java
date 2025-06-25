@@ -138,10 +138,19 @@ public class ConsumoResource {
 		paramsAnterior.put("mes", mesAnterior);
 		paramsAnterior.put("ano", anoAnterior);
 		paramsAnterior.put("id", request.getConsumo().getCliente().getId());
-	
-		Consumo consumoAnterior = Consumo.find("mes = :mes and ano = :ano and cliente.id= :id ", paramsAnterior).singleResult();
+		Consumo consumoAnterior = new Consumo();
+		try {
+			 consumoAnterior = Consumo.find("mes = :mes and ano = :ano and cliente.id= :id ", paramsAnterior).singleResult();
+			 consumoAnterior.setSaldoAnterior(new BigDecimal(consumoAnterior.getSaldoAnterior().intValue()));
+		}catch (Exception e) {
+			// TODO: handle exception
+			consumoAnterior.setSaldoDevedor(BigDecimal.ZERO);
+		}
     	
     	int valorMaximo = consumoRepository.calculaFaturaMaxima(request.getConsumo().getContrato());
+    	
+    	System.out.println(request.getConsumo().getInjetado());
+    	System.out.println(consumoAnterior.getSaldoDevedor());
     	int totalAFaturar = request.getConsumo().getInjetado().add(consumoAnterior.getSaldoDevedor()).intValue();
     	
     	if(totalAFaturar > valorMaximo ) {

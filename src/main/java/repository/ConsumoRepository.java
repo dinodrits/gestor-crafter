@@ -123,7 +123,6 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
         		BigDecimal desconto = u.getConsumo().getValorUnitarioCeb().multiply(u.getConsumo().getDesconto()).divide(new BigDecimal(100));
         		System.out.println(u.getConsumo().getValorUnitarioCeb().subtract(desconto));
         		add.setValorKw(u.getConsumo().getValorUnitarioCeb().subtract(desconto));
-
 	        	add.setValorTotal(add.getValorKw().multiply( BigDecimal.valueOf( add.getCompensado()) ));
         		add.setValorContratado(add.getValorTotal());
         	}
