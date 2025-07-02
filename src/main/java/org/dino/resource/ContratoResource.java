@@ -17,6 +17,7 @@ import repository.ContratoRepository;
 import repository.UsinaRepository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Base64;
 import java.util.List;
 
@@ -103,6 +104,7 @@ public class ContratoResource {
 				}
 	        }
 	        requestContrato.getContrato().setCliente(requestContrato.getCliente());
+	        requestContrato.getContrato().setValorMedioKw(requestContrato.getContrato().getTotalContrato().divide(requestContrato.getContrato().getQtdContratada()));
 	        requestContrato.getContrato().persist();
 	        contratoPersistent = requestContrato.getContrato();
     	}else {
@@ -112,6 +114,8 @@ public class ContratoResource {
     		entity.setPrazo(requestContrato.getContrato().getPrazo());
     		entity.setQtdContratada(requestContrato.getContrato().getQtdContratada());
     		entity.setQtdIsencao(requestContrato.getContrato().getQtdIsencao());
+    		entity.setTotalContrato(requestContrato.getContrato().getTotalContrato());
+    		entity.setValorMedioKw(entity.getTotalContrato().divide(entity.getQtdContratada(),4,RoundingMode.HALF_DOWN));
     		contratoPersistent = entity;
     		
     	}

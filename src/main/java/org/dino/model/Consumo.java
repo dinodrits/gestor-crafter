@@ -86,10 +86,27 @@ public class Consumo extends PanacheEntityBase{
     @Column(name = "saldoDevedorAnterior", precision = 10, scale = 4, columnDefinition = "decimal(10,4) default 0.0000")
     private BigDecimal saldoDevedorAnterior;
     
+    
+    @Column(name = "valorMedioContratado", precision = 10, scale = 4, columnDefinition = "decimal(10,4) default 0.0000")
+    private BigDecimal valorMedioContratado;
+    
+    @Column(name = "valorTotalContratado", precision = 12, scale = 4, columnDefinition = "decimal(10,4) default 0.0000")
+    private BigDecimal valorTotalContratado;
+    
     @Column(name = "pago", columnDefinition = "boolean default false")
     private Boolean pago;
+    
+    
 
-    public BigDecimal getSaldoDevedorAnterior() {
+    public BigDecimal getValorMedioContratado() {
+		return valorMedioContratado;
+	}
+
+	public void setValorMedioContratado(BigDecimal valorMedioContratado) {
+		this.valorMedioContratado = valorMedioContratado;
+	}
+
+	public BigDecimal getSaldoDevedorAnterior() {
 		return saldoDevedorAnterior;
 	}
 
@@ -273,6 +290,14 @@ public class Consumo extends PanacheEntityBase{
 
 	public void setPago(Boolean pago) {
 		this.pago = pago;
+	}
+
+	public BigDecimal getValorTotalContratado() {
+		return valorTotalContratado;
+	}
+
+	public void setValorTotalContratado(BigDecimal valorTotalContratado) {
+		this.valorTotalContratado = valorTotalContratado;
 	}
 	
 	

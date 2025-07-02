@@ -65,6 +65,9 @@ public class Contrato extends PanacheEntityBase{
     
     @Column(name = "valorIsencao", precision = 10, scale = 4)
     private BigDecimal valorIsencao;
+    
+    @Column(name = "valorMedioKw", precision = 10, scale = 4)
+    private BigDecimal valorMedioKw;
 
     
     @Column(name = "modalidadeFaturamento")
@@ -170,6 +173,14 @@ public class Contrato extends PanacheEntityBase{
 
 	public void setTotalContrato(BigDecimal totalContrato) {
 		this.totalContrato = totalContrato;
+	}
+
+	public BigDecimal getValorMedioKw() {
+		return valorMedioKw;
+	}
+
+	public void setValorMedioKw(BigDecimal valorMedioKw) {
+		this.valorMedioKw = valorMedioKw;
 	}
 
 

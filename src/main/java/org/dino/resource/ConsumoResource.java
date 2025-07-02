@@ -146,22 +146,33 @@ public class ConsumoResource {
 			// TODO: handle exception
 			consumoAnterior.setSaldoDevedor(BigDecimal.ZERO);
 		}
+		
+		Contrato contrato = Contrato.findById(request.getConsumo().getContrato().getId()); 
     	
-    	int valorMaximo = consumoRepository.calculaFaturaMaxima(request.getConsumo().getContrato());
+    	//int valorMaximo = consumoRepository.calculaFaturaMaxima(request.getConsumo().getContrato());
+		BigDecimal valorMaximo = contrato.getTotalContrato().multiply(new BigDecimal(1.3));
     	
     	System.out.println(request.getConsumo().getInjetado());
     	System.out.println(consumoAnterior.getSaldoDevedor());
-    	int totalAFaturar = request.getConsumo().getInjetado().add(consumoAnterior.getSaldoDevedor()).intValue();
     	
-    	if(totalAFaturar > valorMaximo ) {
-    		request.getConsumo().setSaldoDevedor(new BigDecimal( totalAFaturar - valorMaximo));
-    	}
+    	
+    	
+    	
     	
     	System.out.println(descontoValor);
     	System.out.println(request.getConsumo().getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
     	request.getConsumo().setValorKw(request.getConsumo().getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
     	
-    	request.getConsumo().setValorTotal((request.getConsumo().getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(request.getConsumo().getInjetado()));
+    	BigDecimal totalAFaturar = request.getConsumo().getInjetado().multiply(request.getConsumo().getValorKw()).add(consumoAnterior.getSaldoDevedor());
+    	
+    	if(totalAFaturar.compareTo(valorMaximo) > 0 ) {
+    		request.getConsumo().setSaldoDevedor(totalAFaturar.subtract(valorMaximo));
+    		request.getConsumo().setValorTotal(valorMaximo);
+    	}else {
+    		
+    		request.getConsumo().setValorTotal((request.getConsumo().getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(request.getConsumo().getInjetado()).add(consumoAnterior.getSaldoDevedor()) );
+    	}
+    	
     	request.getConsumo().persist();
     	
     	List<UnidadeConsumidoraConsumo> unidades = request.getUnidadesConsumos();
@@ -197,12 +208,12 @@ public class ConsumoResource {
         entity.setCliente(person.getConsumo().getCliente());
         entity.setCompensado(person.getConsumo().getCompensado());
         entity.setConsumido(person.getConsumo().getConsumido());
-        entity.setContrato(person.getConsumo().getContrato());
+       // entity.setContrato(person.getConsumo().getContrato());
       
         entity.setDesconto(person.getConsumo().getDesconto());
         entity.setInjetado(person.getConsumo().getInjetado());
         entity.setMes(person.getConsumo().getMes());
-        entity.setValorKw(person.getConsumo().getValorKw().setScale(4, RoundingMode.HALF_DOWN));
+        entity.setValorKw(person.getConsumo().getValorKw());
         entity.setValorUnitarioCeb(person.getConsumo().getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN));
         entity.setVencimento(person.getConsumo().getVencimento());
         
@@ -210,10 +221,46 @@ public class ConsumoResource {
         BigDecimal descontoValor =  entity.getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN).multiply(entity.getDesconto().divide(BigDecimal.valueOf(100).setScale(4, RoundingMode.HALF_DOWN)));
     	
     
-        entity.setValorKw(entity.getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
+       // entity.setValorKw(entity.getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
     	
         entity.setValorTotal((entity.getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(entity.getInjetado()));
         
+        int mesAnterior  = person.getConsumo().getMes() - 1;
+		 int anoAnterior =  person.getConsumo().getAno() - 0;
+		 if(mesAnterior < 1) {
+			 mesAnterior = 12;
+			 anoAnterior = anoAnterior -1;
+		 }
+      //buscar consumo anterior 
+      		Map<String, Object> paramsAnterior = new HashMap<>();
+      		paramsAnterior.put("mes", mesAnterior);
+      		paramsAnterior.put("ano", anoAnterior);
+      		paramsAnterior.put("id", person.getConsumo().getCliente().getId());
+      		Consumo consumoAnterior = new Consumo();
+      		try {
+      			 consumoAnterior = Consumo.find("mes = :mes and ano = :ano and cliente.id= :id ", paramsAnterior).singleResult();
+      			 consumoAnterior.setSaldoAnterior(new BigDecimal(consumoAnterior.getSaldoAnterior().intValue()));
+      		}catch (Exception e) {
+      			// TODO: handle exception
+      			consumoAnterior.setSaldoDevedor(BigDecimal.ZERO);
+      		}
+        
+      		
+      	System.out.println(objectMapper.writeValueAsString(entity));	
+        BigDecimal valorMaximo = entity.getContrato().getTotalContrato().multiply(new BigDecimal(1.3));
+        BigDecimal totalAFaturar = person.getConsumo().getInjetado().multiply(person.getConsumo().getValorKw()).add(consumoAnterior.getSaldoDevedor());
+        
+        System.out.println("valor maximo contrato: " + valorMaximo.toString());
+        System.out.println("valor a faturar : " + totalAFaturar.toString());
+        System.out.println("um mesno o outro : " + totalAFaturar.subtract(valorMaximo));
+        
+        if(totalAFaturar.compareTo(valorMaximo) > 0 ) {
+        	entity.setSaldoDevedor(totalAFaturar.subtract(valorMaximo));
+        	
+    	}else {
+    		
+    		person.getConsumo().setValorTotal((person.getConsumo().getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(person.getConsumo().getInjetado()).add(consumoAnterior.getSaldoDevedor()) );
+    	}
         
         List<UnidadeConsumidoraConsumo> unidades = person.getUnidadesConsumos();
     	
