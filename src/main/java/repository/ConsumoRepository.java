@@ -29,6 +29,7 @@ import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.model.UnidadeContrato;
 import org.dino.model.Usina;
 import org.dino.resource.request.ChartDataResponse;
+import org.dino.resource.request.ConsumoHistoricoValorResponse;
 import org.dino.resource.request.ConsumoRelatorioResponse;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -42,6 +43,15 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 	@Inject
     ObjectMapper objectMapper;
 
+	
+	
+	public List<ConsumoHistoricoValorResponse> getHistoricoCliente(Long id){
+		List<ConsumoHistoricoValorResponse> c = getEntityManager().createNativeQuery("SELECT c.valorTotalContratado valorTotalContratado,c.idCliente idCliente, (SELECT CONCAT(c2.mes ,'/', c2.ano) FROM Consumos c2 WHERE c2.idCliente = c.idCliente AND c2.valorTotalContratado = c.valorTotalContratado ORDER BY c2.ano,c2.mes LIMIT 1 ) AS dtValor FROM Consumos c WHERE c.idCliente = :idCliente GROUP BY c.valorTotalContratado,c.idCliente  ", ConsumoHistoricoValorResponse.class).setParameter("idCliente", id).getResultList();
+		
+		
+		return c;
+	}
+	
 	public BigDecimal getMediaConsumo(Long id) {
 		Object result;
 		result =  getEntityManager().createNativeQuery("SELECT AVG(valorTotal) FROM Consumos WHERE idCliente = :idCliente").setParameter("idCliente", id).getSingleResult();

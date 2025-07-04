@@ -14,6 +14,7 @@ import org.dino.model.MonitoramentoKw;
 import org.dino.model.UnidadeConsumidoraConsumo;
 import org.dino.resource.request.CadastroConsumoRequest;
 import org.dino.resource.request.ChartDataResponse;
+import org.dino.resource.request.ConsumoHistoricoValorResponse;
 import org.dino.resource.request.ConsumoRelatorioResponse;
 import org.dino.resource.request.Resposta;
 
@@ -216,7 +217,7 @@ public class ConsumoResource {
         entity.setValorKw(person.getConsumo().getValorKw());
         entity.setValorUnitarioCeb(person.getConsumo().getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN));
         entity.setVencimento(person.getConsumo().getVencimento());
-        
+        entity.setValorTotalContratado(person.getConsumo().getValorTotalContratado());
         
         BigDecimal descontoValor =  entity.getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN).multiply(entity.getDesconto().divide(BigDecimal.valueOf(100).setScale(4, RoundingMode.HALF_DOWN)));
     	
@@ -386,6 +387,18 @@ Map<String, Object> params = new HashMap<>();
     	
     	
     	return consumoRepository.getTotalConsumoMes(mes, ano);
+    	
+    	
+    }
+    
+    @GET
+    @Path("/getHistoricoContrato/{id}")
+    public List<ConsumoHistoricoValorResponse> getHistoricoValorContrato(Long id) {
+    	//return consumoRepository.getValorMedioConsumokw(id);
+    	
+    	
+    	
+    	return consumoRepository.getHistoricoCliente(id);
     	
     	
     }
