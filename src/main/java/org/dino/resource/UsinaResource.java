@@ -168,6 +168,7 @@ public class UsinaResource {
         entity.setEmail(person.getEmail());
         entity.setEndereco(person.getEndereco());
         entity.setUf(person.getUf());
+        entity.setImagemBase64(person.getImagemBase64());
         
         entity.persist();
         System.out.println(entity.getId());

@@ -151,22 +151,29 @@ public class ConsumoResource {
 		Contrato contrato = Contrato.findById(request.getConsumo().getContrato().getId()); 
     	
     	//int valorMaximo = consumoRepository.calculaFaturaMaxima(request.getConsumo().getContrato());
-		BigDecimal valorMaximo = contrato.getTotalContrato().multiply(new BigDecimal(1.3));
+		BigDecimal valorMaximo = BigDecimal.ZERO;
+		
+		if(request.getConsumo().getValorTotalContratado() != null && request.getConsumo().getValorTotalContratado().compareTo(BigDecimal.ZERO) > 0 ) {
+			valorMaximo = request.getConsumo().getValorTotalContratado().multiply(new BigDecimal(1.3));
+			
+		}
+		
+		if(contrato.getValorMedioKw() != null && contrato.getValorMedioKw().compareTo(BigDecimal.ZERO) > 0 ) {
+			request.getConsumo().setValorMedioContratado(contrato.getValorMedioKw());
+		}
+		
+		
+//		if(contrato.getTotalContrato() != null ) {
+//			valorMaximo = contrato.getTotalContrato().multiply(new BigDecimal(1.3));
+//		}
+		
+		
     	
-    	System.out.println(request.getConsumo().getInjetado());
-    	System.out.println(consumoAnterior.getSaldoDevedor());
-    	
-    	
-    	
-    	
-    	
-    	System.out.println(descontoValor);
-    	System.out.println(request.getConsumo().getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
     	request.getConsumo().setValorKw(request.getConsumo().getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
     	
     	BigDecimal totalAFaturar = request.getConsumo().getInjetado().multiply(request.getConsumo().getValorKw()).add(consumoAnterior.getSaldoDevedor());
     	
-    	if(totalAFaturar.compareTo(valorMaximo) > 0 ) {
+    	if(totalAFaturar.compareTo(valorMaximo) > 0  && valorMaximo.compareTo(BigDecimal.ZERO) > 0) {
     		request.getConsumo().setSaldoDevedor(totalAFaturar.subtract(valorMaximo));
     		request.getConsumo().setValorTotal(valorMaximo);
     	}else {
@@ -218,6 +225,7 @@ public class ConsumoResource {
         entity.setValorUnitarioCeb(person.getConsumo().getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN));
         entity.setVencimento(person.getConsumo().getVencimento());
         entity.setValorTotalContratado(person.getConsumo().getValorTotalContratado());
+        entity.setValorMedioContratado(person.getConsumo().getValorMedioContratado());
         
         BigDecimal descontoValor =  entity.getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN).multiply(entity.getDesconto().divide(BigDecimal.valueOf(100).setScale(4, RoundingMode.HALF_DOWN)));
     	
@@ -248,20 +256,26 @@ public class ConsumoResource {
         
       		
       	System.out.println(objectMapper.writeValueAsString(entity));	
-        BigDecimal valorMaximo = entity.getContrato().getTotalContrato().multiply(new BigDecimal(1.3));
+        BigDecimal valorMaximo = entity.getValorTotalContratado().multiply(new BigDecimal(1.3));
         BigDecimal totalAFaturar = person.getConsumo().getInjetado().multiply(person.getConsumo().getValorKw()).add(consumoAnterior.getSaldoDevedor());
         
         System.out.println("valor maximo contrato: " + valorMaximo.toString());
         System.out.println("valor a faturar : " + totalAFaturar.toString());
         System.out.println("um mesno o outro : " + totalAFaturar.subtract(valorMaximo));
         
-        if(totalAFaturar.compareTo(valorMaximo) > 0 ) {
+        if(totalAFaturar.compareTo(valorMaximo) > 0  && valorMaximo.compareTo(BigDecimal.ZERO) > 0) {
         	entity.setSaldoDevedor(totalAFaturar.subtract(valorMaximo));
         	
     	}else {
     		
     		person.getConsumo().setValorTotal((person.getConsumo().getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(person.getConsumo().getInjetado()).add(consumoAnterior.getSaldoDevedor()) );
     	}
+        
+//        Contrato contrato = Contrato.findById(entity.getContrato().getId());
+//        
+//        if(contrato.getValorMedioKw() != null && contrato.getValorMedioKw().compareTo(BigDecimal.ZERO) > 0 ) {
+//			entity.setValorMedioContratado(contrato.getValorMedioKw());
+//		}
         
         List<UnidadeConsumidoraConsumo> unidades = person.getUnidadesConsumos();
     	

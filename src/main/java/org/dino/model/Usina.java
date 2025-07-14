@@ -70,6 +70,10 @@ public class Usina extends PanacheEntityBase{
     @Column(columnDefinition = "LONGBLOB")
     private byte[] imagem;
     
+    @Lob
+    @Column(name = "imagem_base64", columnDefinition = "LONGTEXT")
+    public String imagemBase64;
+    
     @OneToMany(mappedBy = "usina", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference("contrato-cliente")
     private List<UsinaContrato> contratos;
@@ -211,7 +215,16 @@ public class Usina extends PanacheEntityBase{
 	public void setImagem(byte[] imagem) {
 		this.imagem = imagem;
 	}
+
+	public String getImagemBase64() {
+		return imagemBase64;
+	}
+
+	public void setImagemBase64(String imagemBase64) {
+		this.imagemBase64 = imagemBase64;
+	}
     
+	
     
 
 }
