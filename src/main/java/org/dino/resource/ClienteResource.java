@@ -149,6 +149,20 @@ public class ClienteResource {
     	return c;
     }
     
+    
+    @GET
+    @Path("filtrarModalidade/{modalidade}")
+    public List<Cliente> filtrarModalidade(String modalidade) throws JsonProcessingException {
+    	
+    	if(modalidade.equals("TODOS")) {
+    		return Cliente.listAll();
+    	}else {
+    		return Cliente.find("SELECT DISTINCT c FROM Cliente c JOIN c.contratos cont WHERE cont.modalidadeFaturamento = ?1", modalidade).list();
+    	}
+    	
+    	
+    }
+    
     @GET
     @Path("/{id}")
     public Cliente get(Long id) throws JsonProcessingException {

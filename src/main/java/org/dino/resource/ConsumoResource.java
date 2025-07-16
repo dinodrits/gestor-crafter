@@ -170,15 +170,18 @@ public class ConsumoResource {
 		
     	
     	request.getConsumo().setValorKw(request.getConsumo().getValorUnitarioCeb().subtract(descontoValor).setScale(4, RoundingMode.HALF_DOWN));
-    	
-    	BigDecimal totalAFaturar = request.getConsumo().getInjetado().multiply(request.getConsumo().getValorKw()).add(consumoAnterior.getSaldoDevedor());
-    	
-    	if(totalAFaturar.compareTo(valorMaximo) > 0  && valorMaximo.compareTo(BigDecimal.ZERO) > 0) {
-    		request.getConsumo().setSaldoDevedor(totalAFaturar.subtract(valorMaximo));
-    		request.getConsumo().setValorTotal(valorMaximo);
+    	if(contrato.getModalidadeFaturamento().equals("PV")) {
+	    	BigDecimal totalAFaturar = request.getConsumo().getInjetado().multiply(request.getConsumo().getValorKw()).add(consumoAnterior.getSaldoDevedor());
+	    	
+	    	if(totalAFaturar.compareTo(valorMaximo) > 0  && valorMaximo.compareTo(BigDecimal.ZERO) > 0) {
+	    		request.getConsumo().setSaldoDevedor(totalAFaturar.subtract(valorMaximo));
+	    		request.getConsumo().setValorTotal(valorMaximo);
+	    	}else {
+	    		
+	    		request.getConsumo().setValorTotal((request.getConsumo().getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(request.getConsumo().getInjetado()).add(consumoAnterior.getSaldoDevedor()) );
+	    	}
     	}else {
-    		
-    		request.getConsumo().setValorTotal((request.getConsumo().getValorKw().setScale(4, RoundingMode.HALF_DOWN)).multiply(request.getConsumo().getInjetado()).add(consumoAnterior.getSaldoDevedor()) );
+    		request.getConsumo().setValorTotal(contrato.getTotalContrato());
     	}
     	
     	request.getConsumo().persist();
