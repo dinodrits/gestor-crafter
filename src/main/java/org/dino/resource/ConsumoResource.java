@@ -229,6 +229,11 @@ public class ConsumoResource {
         entity.setVencimento(person.getConsumo().getVencimento());
         entity.setValorTotalContratado(person.getConsumo().getValorTotalContratado());
         entity.setValorMedioContratado(person.getConsumo().getValorMedioContratado());
+        entity.setPago(person.getConsumo().isPago());
+        entity.setObservacao(person.getConsumo().getObservacao());
+        
+        
+        
         
         BigDecimal descontoValor =  entity.getValorUnitarioCeb().setScale(4, RoundingMode.HALF_DOWN).multiply(entity.getDesconto().divide(BigDecimal.valueOf(100).setScale(4, RoundingMode.HALF_DOWN)));
     	
