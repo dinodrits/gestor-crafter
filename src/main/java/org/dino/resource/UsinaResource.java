@@ -181,12 +181,21 @@ public class UsinaResource {
     @Transactional
     public Response delete(Long id) {
         Usina entity = Usina.findById(id);
-        long cUsinas = Consumo.count("usina.id = :id",
-        Parameters.with("id", id));
+        long cUsinas = UnidadeConsumidoraConsumo.count("usina.id = :id",        Parameters.with("id", id));
+        long cGeracoes = Geracao.count("usina.id = :id",        Parameters.with("id", id));
+        long cContratos = Contrato.count("usina.id = :id",        Parameters.with("id", id));
         
         if(cUsinas > 0) {
         	Resposta resposta = new Resposta("Existem consumos cadastrados nessa usina.", 400);
             return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+        }
+        if(cGeracoes > 0) {
+        	Resposta resposta = new Resposta("Existem gerações cadastradas nessa usina.", 400);
+        	return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
+        }
+        if(cContratos > 0) {
+        	Resposta resposta = new Resposta("Existem contratos cadastrados nessa usina.", 400);
+        	return Response.status(Response.Status.BAD_REQUEST).entity(resposta).build();
         }
         
         Geracao.delete("usina.id = :id",

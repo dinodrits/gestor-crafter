@@ -76,12 +76,19 @@ public class ConsumoResource {
     	
         Consumo c = Consumo.find("Select c from Consumo c where cliente.id = :id order by c.ano desc, c.mes desc limit 1",
 		         Parameters.with("id", id)).singleResult();
+        if(c == null ) {
+        	return null;
+        }
         Map<String, Object> params = new HashMap<>();
     	params.put("mes",c.getMes());
     	params.put("ano", c.getAno());
     	
-        MonitoramentoKw kw =  MonitoramentoKw.find(" ano = :ano and mes = :mes ", params).singleResult();
-        c.setValorUnitarioCeb(kw.getTarifaBandeira());
+    	try {
+	        MonitoramentoKw kw =  MonitoramentoKw.find(" ano = :ano and mes = :mes ", params).singleResult();
+	        c.setValorUnitarioCeb(kw.getTarifaBandeira());
+    	}catch (Exception e) {
+			// TODO: handle exception
+		}
         return c;
     	
     	
