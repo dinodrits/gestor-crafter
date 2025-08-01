@@ -253,7 +253,16 @@ public BigDecimal getSaldoDevedorMes(Long id,Integer idUnidade, int mes, int ano
 	        	
 	        	//cr.setValorKw(mk.getTarifaBandeira().subtract( mk.getTarifaBandeira().multiply(ucc.getConsumo().getDesconto())));
 	        	
-	        	cr.setValorTotal(cr.getValorKw().multiply( BigDecimal.valueOf( cr.getCompensado()) ));
+	        	cr.setValorTotal(cr.getValorKw().multiply( BigDecimal.valueOf( cr.getInjetado()) ));
+	        	if(cr.getConsumo().getSaldoDevedorAnterior() != null) {
+	        		cr.setValorTotal(cr.getValorTotal().add(cr.getConsumo().getSaldoDevedorAnterior()) );
+	        	}
+	        	
+	        	if(ucc.getConsumo().getContrato().getTotalContrato() != null &&  ucc.getConsumo().getContrato().getTotalContrato().compareTo(BigDecimal.ZERO)  > 0 ) {
+	        		if(ucc.getConsumo().getContrato().getTotalContrato().multiply(new BigDecimal(1.3)).compareTo(cr.getValorTotal()) > 0 ) {
+	        			cr.setValorTotal(ucc.getConsumo().getContrato().getTotalContrato().multiply(new BigDecimal(1.3)));
+	        		}
+	        	}
 	        	
 	        	if( ucc.getConsumo().getContrato().getModalidadeFaturamento() != null && ucc.getConsumo().getContrato().getModalidadeFaturamento().equals("PF") ) {
 	        		cr.setValorContratado(ucc.getConsumo().getContrato().getTotalContrato());
