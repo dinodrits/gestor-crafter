@@ -48,7 +48,7 @@ public class ItauResource {
         CobrancaRequest request = new CobrancaRequest();
         
         request.calendario = new CobrancaRequest.Calendario();
-        request.calendario.dataDeVencimento = "2025-05-31";
+        request.calendario.dataDeVencimento = "2025-09-30";
         
         request.devedor = new CobrancaRequest.Devedor();
         request.devedor.cpf = "12345678909";

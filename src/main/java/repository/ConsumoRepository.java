@@ -247,9 +247,9 @@ public BigDecimal getSaldoDevedorMes(Long id,Integer idUnidade, int mes, int ano
 	        	cr.setCip(ucc.getCip());
 	        	cr.setValorKwCeb(ucc.getConsumo().getValorUnitarioCeb());
 	        	
-	        	BigDecimal desconto = ucc.getConsumo().getValorUnitarioCeb().multiply(ucc.getConsumo().getDesconto()).divide(new BigDecimal(100));
+	        	//BigDecimal desconto = ucc.getConsumo().getValorUnitarioCeb().multiply(ucc.getConsumo().getDesconto()).divide(new BigDecimal(100));
         		
-        		cr.setValorKw(ucc.getConsumo().getValorUnitarioCeb().subtract(desconto));
+        		cr.setValorKw(ucc.getConsumo().getValorKw());
 	        	
 	        	//cr.setValorKw(mk.getTarifaBandeira().subtract( mk.getTarifaBandeira().multiply(ucc.getConsumo().getDesconto())));
 	        	
@@ -267,11 +267,11 @@ public BigDecimal getSaldoDevedorMes(Long id,Integer idUnidade, int mes, int ano
 	        	if( ucc.getConsumo().getContrato().getModalidadeFaturamento() != null && ucc.getConsumo().getContrato().getModalidadeFaturamento().equals("PF") ) {
 	        		cr.setValorContratado(ucc.getConsumo().getContrato().getTotalContrato());
 	        		System.out.println(cr.getCompensado());
-	        		if(cr.getCompensado() > 0) {
-	        			cr.setValorKw(cr.getValorContratado().divide(new BigDecimal( cr.getCompensado()),4, RoundingMode.HALF_EVEN));
-	        		}else {
-	        			cr.setValorKw(BigDecimal.ZERO);
-	        		}
+//	        		if(cr.getCompensado() > 0) {
+//	        			cr.setValorKw(cr.getValorContratado().divide(new BigDecimal( cr.getCompensado()),4, RoundingMode.HALF_EVEN));
+//	        		}else {
+//	        			cr.setValorKw(BigDecimal.ZERO);
+//	        		}
 	        	}else {
 	        		
 	        		

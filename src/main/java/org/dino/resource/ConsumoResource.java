@@ -309,6 +309,7 @@ public class ConsumoResource {
     			consumoEntity.setSaldo(unidadeConsumidoraConsumo.getSaldo());
     			consumoEntity.setSaldoAnterior(unidadeConsumidoraConsumo.getSaldoAnterior());
     			consumoEntity.setPercentual(unidadeConsumidoraConsumo.getPercentual());
+    			consumoEntity.setCip(unidadeConsumidoraConsumo.getCip());
     			consumoEntity.persist();
     		}
     		
