@@ -102,7 +102,7 @@ public class ConsumoRepository implements PanacheRepository<Usina>{
 			add.setCompensado(u.getCompensado().intValue());
 			add.setConsumido(u.getConsumido().intValue());
 			add.setConsumo(u.getConsumo());
-			add.setFatura(u.getFatura().intValue());
+			add.setFatura(u.getFatura() != null ? u.getFatura().intValue() : 0 );
 			add.setInjetado(u.getInjetado().intValue());
 			add.setMes(u.getConsumo().getMes());
 			add.setPercentual(u.getPercentual());
