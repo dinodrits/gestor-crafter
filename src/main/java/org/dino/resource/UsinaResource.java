@@ -14,6 +14,9 @@ import org.dino.model.UnidadeContrato;
 import org.dino.model.Usina;
 import org.dino.resource.request.ChartDataResponse;
 import org.dino.resource.request.Resposta;
+import org.dino.util.Views;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 import io.quarkus.panache.common.Parameters;
 import jakarta.inject.Inject;
@@ -39,6 +42,7 @@ public class UsinaResource {
 	UsinaRepository usinasRepository;
 	
 	@GET
+	@JsonView(Views.Lista.class)
     public List<Usina> list() {
         return Usina.listAll();
     }
@@ -76,6 +80,7 @@ public class UsinaResource {
 	
 	@GET
     @Path("geracoes/{id}")
+	@JsonView(Views.Lista.class)
     public List<Geracao> getGeracoes(Long id) {
 		return  Geracao.find("usina.id = :id",
 		         Parameters.with("id", id)).list();
@@ -183,7 +188,7 @@ public class UsinaResource {
         Usina entity = Usina.findById(id);
         long cUsinas = UnidadeConsumidoraConsumo.count("usina.id = :id",        Parameters.with("id", id));
         long cGeracoes = Geracao.count("usina.id = :id",        Parameters.with("id", id));
-        long cContratos = Contrato.count("usina.id = :id",        Parameters.with("id", id));
+        long cContratos = UnidadeContrato.count("usina.id = :id",        Parameters.with("id", id));
         
         if(cUsinas > 0) {
         	Resposta resposta = new Resposta("Existem consumos cadastrados nessa usina.", 400);

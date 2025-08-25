@@ -78,9 +78,16 @@ public class ClienteResource {
 	
 	@GET
 	@Path("unidadesConsumidoras/{id}")
-	public List<UnidadeConsumidora> getUnidadesConsumidoras(Long id) {
-		return  UnidadeConsumidora.find("cliente.id = :id",
-				Parameters.with("id", id)).list();
+	public List<UnidadeContrato> getUnidadesConsumidoras(Long id) {
+		
+		
+		Contrato c = Contrato.find("cliente.id = :id  ORDER BY dtInicio DESC", Parameters.with("id", id))
+	    .firstResult();
+		
+		return c.getUnidadesContratos();
+		
+//		return  UnidadeConsumidora.find("cliente.id = :id",
+//				Parameters.with("id", id)).list();
 		
 	}
 	

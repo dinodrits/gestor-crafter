@@ -2,7 +2,10 @@ package org.dino.model;
 
 import java.math.BigDecimal;
 
+import org.dino.util.Views;
 import org.hibernate.envers.Audited;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -13,20 +16,25 @@ import jakarta.persistence.*;
 public class Geracao extends PanacheEntityBase{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(Views.Lista.class)
     @Column(name = "idgeracoes", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonView(Views.Lista.class)
     @JoinColumn(name = "idUsina", nullable = false)
     private Usina usina;
 
     @Column(name = "mes")
+    @JsonView(Views.Lista.class)
     private Integer mes;
 
     @Column(name = "ano")
+    @JsonView(Views.Lista.class)
     private Integer ano;
 
     @Column(name = "qtdGerada", precision = 10, scale = 4)
+    @JsonView(Views.Lista.class)
     private BigDecimal qtdGerada;
     
     

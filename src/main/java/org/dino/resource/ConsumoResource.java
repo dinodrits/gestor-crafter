@@ -17,7 +17,9 @@ import org.dino.resource.request.ChartDataResponse;
 import org.dino.resource.request.ConsumoHistoricoValorResponse;
 import org.dino.resource.request.ConsumoRelatorioResponse;
 import org.dino.resource.request.Resposta;
+import org.dino.util.Views;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -353,6 +355,7 @@ public class ConsumoResource {
     
     @GET
     @Path("/consumos/{id}/{ano}/{idUnidade}/{mes}/{qtdMes}")
+    @JsonView(Views.Lista.class)
     public List<ConsumoRelatorioResponse> getRelatorioCliente(Long id,int ano,Long idUnidade,int mes,int qtdMes) {
     	
     	Map<String, Object> params = new HashMap<>();

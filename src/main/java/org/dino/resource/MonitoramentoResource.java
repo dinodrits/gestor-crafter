@@ -17,6 +17,7 @@ import org.dino.resource.request.ChartDataResponse;
 import org.dino.resource.request.Resposta;
 
 import io.quarkus.panache.common.Parameters;
+import io.quarkus.panache.common.Sort;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -44,7 +45,7 @@ public class MonitoramentoResource {
 	
 	@GET
     public List<MonitoramentoKw> list() {
-        return MonitoramentoKw.listAll();
+        return MonitoramentoKw.listAll(Sort.by("ano", "mes"));
     }
 
 //	@GET

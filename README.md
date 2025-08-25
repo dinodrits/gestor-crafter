@@ -9,6 +9,12 @@ docker build -f src/main/docker/Dockerfile.jvm -t quarkus/sigeni-back .
 
 docker image save quarkus/sigeni-back -o sigeni-back.tar
 
+ou
+ 
+docker tag quarkus/sigeni-back dinodrits/sigeni-back:latest
+
+docker push dinodrits/sigeni-back:latest
+
 
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
