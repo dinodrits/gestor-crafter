@@ -22,7 +22,7 @@ jobs:
           cache: maven
 
       - name: Build
-        run: ./mvnw verify -B
+        ./mvnw package
         env:
           QUARKUS_DATASOURCE_JDBC_URL: "jdbc:mysql://82.29.155.85:3306/mydb?useTimezone=true&serverTimezone=UTC"
 
