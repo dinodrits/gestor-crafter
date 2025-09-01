@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [main] # Altere se usar outro branch padrão
+    branches: [main]
 
 jobs:
   build:
@@ -34,5 +34,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: src/main/docker/Dockerfile.jvm
           push: true
           tags: dinodrits/gestor-crafter:latest
